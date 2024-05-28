@@ -1,0 +1,46 @@
+name: tracker-v01
+
+services:
+  db:
+    restart: always
+    image: postgres:13
+    environment:
+      POSTGRES_USER: {user}
+      POSTGRES_PASSWORD: {password}
+      POSTGRES_DB: {name_db}
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+  # Инфраструктура
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.7
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - './config/keycloak/import:/opt/keycloak/data/import'
+    ports:
+      - '8083:8080'
+    command: start-dev --import-realm
+
+  webapp:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: webapp/target/webapp-1.0-SNAPSHOT-exec.jar
+    ports:
+      - '6060:8080'
+
+  service:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: service/target/service-1.0-SNAPSHOT-exec.jar
+    ports:
+      - '6062:8080'
+
+

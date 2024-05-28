@@ -1,0 +1,11 @@
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://172.17.0.1:8083/realms/{your_realm}
+
+
+
+
