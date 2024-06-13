@@ -1,0 +1,21 @@
+server:
+  port:
+    8080
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+#            issuer-uri: http://172.17.0.1:8083/realms/expenseRealm
+            issuer-uri: http://localhost:8083/realms/expenseRealm
+            user-name-attribute: preferred_username
+        registration:
+          expense-app-client-credentials:
+            provider: keycloak
+            client-id: expense-app
+            client-secret: zSkzsi0EUIPoYqRQE5SytO2uBDo0wnLA
+            scope:
+              - openid
+              - microprofile-jwt

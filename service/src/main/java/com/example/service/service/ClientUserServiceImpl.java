@@ -24,7 +24,6 @@ public class ClientUserServiceImpl implements  ClientUserService{
     private final ClientUserRepository clientUserRepository;
     private final ModelMapper modelMapper;
 
-
     public List<ClientUserDTO> getAllClientsDTO(){
         List<ClientUserDTO> clientUserDTOList = new ArrayList<>();
         for(ClientUser clientUser :clientUserRepository.findAll()) {
@@ -33,25 +32,14 @@ public class ClientUserServiceImpl implements  ClientUserService{
         return clientUserDTOList;
     }
 
-
     @Override
-    public ClientUser getUserById(int userId) {
-        if (clientUserRepository.findById(userId).isEmpty()){
-            throw new NotFoundException("User with id: "+userId+" not found");
-        }else {
-            return this.clientUserRepository.findById(userId).get();
-        }
-    }
-
     public ClientUser getUserByUsername(String username) {
         if (clientUserRepository.findByUsername(username).isEmpty()){
-            throw new NotFoundException("User with username : "+username+" not found");
+            throw new NotFoundException("User with email : "+username+" not found");
         }else {
-            ClientUser clientUser = this.clientUserRepository.findByUsername(username).get();
-            return clientUser;
+            return this.clientUserRepository.findByUsername(username).get();
         }
     }
-
 
     @Override
     public ClientUser createClientUser(ClientUser clientUser) {
@@ -79,14 +67,14 @@ public class ClientUserServiceImpl implements  ClientUserService{
         }
     }
 
-    public ClientUserDTO updateUser(int id, ClientUserDTO clientUserDTO) {
+    public ClientUserDTO updateUser(String username, ClientUserDTO clientUserDTO) {
         try {
-            ClientUser oldUser = getUserById(id);
+            ClientUser oldUser = getUserByUsername(username);
             oldUser.setUsername(clientUserDTO.getUsername());
             createClientUser(oldUser);
-            return convertToClientUserDTO(getUserById(id));
+            return convertToClientUserDTO(getUserByUsername(username));
         }catch (NotFoundException e){
-            throw new NotFoundException("User with id  " + id + " are NOT exists in our service");
+            throw new NotFoundException("User with username  " + username + " are NOT exists in our service");
         }
     }
 }

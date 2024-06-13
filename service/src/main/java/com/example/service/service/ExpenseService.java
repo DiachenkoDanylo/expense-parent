@@ -8,6 +8,7 @@ import com.example.service.exception.DuplicateException;
 import com.example.service.exception.NotFoundException;
 import com.example.service.repository.ExpenseRepository;
 import lombok.AllArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -26,20 +27,29 @@ public class ExpenseService {
     private final ClientUserServiceImpl clientUserService;
     private final ModelMapper modelMapper;
 
-    public List<ExpenseDTO> getAllExpensesDTOByClient(int id){
+    public List<ExpenseDTO> getAllExpensesDTOByClient(String username){
         List<ExpenseDTO> expenseDTOS = new ArrayList<>();
-        for(Expense expense : expenseRepository.findExpensesByClientUserId(id)) {
+        try {
+            for(Expense expense : expenseRepository.findExpensesByClientUserUsername(username)) {
+                expenseDTOS.add(convertToExpenseDTO(expense));
+            }
+            return expenseDTOS;
+        }catch (NotFoundException e) {
+            throw new NotFoundException("Username " + username + " are NOT exists in our service");
+        }
+
+    }
+
+    public List<Expense> getAllExpensesByClient(String username){
+        return expenseRepository.findExpensesByClientUserUsername(username);
+    }
+
+    public List<ExpenseDTO> getAllExpensesDTOByClientCategory(String username, int catId){
+        List<ExpenseDTO> expenseDTOS = new ArrayList<>();
+        for(Expense expense : expenseRepository.findExpensesByClientUserUsernameAndCategory_Id(username, catId)) {
             expenseDTOS.add(convertToExpenseDTO(expense));
         }
         return expenseDTOS;
-    }
-
-    public List<Expense> getAllExpensesByClient(int id){
-        for (Expense expense :expenseRepository.findExpensesByClientUserId(id)) {
-            System.out.println(expense.toString());
-        }
-        return expenseRepository.findExpensesByClientUserId(id);
-
     }
 
     public Expense getExpenseById(int id){
@@ -48,16 +58,14 @@ public class ExpenseService {
         throw new NotFoundException("The payment with this id : "+id+" not found");
     }
 
-    public ExpenseDTO saveNewExpenseByClient(int id, ExpenseDTO expenseDTO) {
+    public ExpenseDTO saveNewExpenseByClient(String username, ExpenseDTO expenseDTO) {
         try {
-            ClientUser clientUser = clientUserService.getUserById(id);
+            ClientUser clientUser = clientUserService.getUserByUsername(username);
             Expense expense = convertToExpense(expenseDTO);
-            System.out.println(expense.toString());
             expense.setClientUser(clientUser);
-            System.out.println(expense.toString()+" expense after got client");
             return convertToExpenseDTO(expenseRepository.save(expense));
         } catch (NotFoundException e) {
-            throw new NotFoundException("User with id '" + id + "' are not exists in our service");
+            throw new NotFoundException("User with username '" + username + "' are not exists in our service");
         }
     }
 
@@ -65,7 +73,6 @@ public class ExpenseService {
         Expense exp = getExpenseById(expId);
         exp.setExpenseDate(expenseDTO.getExpenseDate());
         exp.setAmount(expenseDTO.getAmount());
-        exp.setCategory(expenseDTO.getCategory());
         exp.setDescription(expenseDTO.getDescription());
         return convertToExpenseDTO(expenseRepository.save(exp));
 

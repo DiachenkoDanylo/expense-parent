@@ -23,8 +23,6 @@ public class ClientUserController {
 
     private final ClientUserServiceImpl clientUserService;
 
-
-
     @GetMapping("")
     public List<ClientUserDTO> getClients(){
         return clientUserService.getAllClientsDTO();
@@ -32,59 +30,27 @@ public class ClientUserController {
 
     @ResponseBody
     @PostMapping()
-    public ResponseEntity<ClientUserDTO> createUser(@RequestBody ClientUserDTO clientUserDTO) {
-
-        try {
-            ClientUser createdUser = clientUserService.convertToClientUser(clientUserDTO);
-            createdUser = clientUserService.createClientUser(createdUser);
-            return new ResponseEntity<>(clientUserService.convertToClientUserDTO(createdUser), HttpStatus.CREATED);
-        } catch (DuplicateException e) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-        }
+    public ClientUserDTO createUser(@RequestBody ClientUserDTO clientUserDTO) {
+        ClientUser createdUser = clientUserService.convertToClientUser(clientUserDTO);
+        createdUser = clientUserService.createClientUser(createdUser);
+        return clientUserService.convertToClientUserDTO(createdUser);
     }
-
-
 
     @DeleteMapping
-    public ResponseEntity<ClientUser> deleteUser(@RequestBody ClientUserDTO clientUserDTO) {
-
-        try {
-            clientUserService.deleteByUsername(clientUserDTO.getUsername());
-            return new ResponseEntity<>(null,HttpStatus.OK);
-        } catch (NotFoundException e){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
+    public ClientUser deleteUser(@RequestBody ClientUserDTO clientUserDTO) {
+        return clientUserService.deleteByUsername(clientUserDTO.getUsername());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ClientUserDTO> getUserById(@PathVariable("id") int id) {
-
-        try {
-            ClientUserDTO clientUserDTO = clientUserService.
-                    convertToClientUserDTO(clientUserService.getUserById(id));
-            return new ResponseEntity<>(clientUserDTO, HttpStatus.OK);
-        } catch (NotFoundException e){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/{username}")
+    public ClientUserDTO getUserByUsername(@PathVariable("username") String username) {
+        return clientUserService.
+                convertToClientUserDTO(clientUserService.getUserByUsername(username));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<ClientUserDTO> updateUser(@PathVariable("id") int id,
+    @PatchMapping("/{username}")
+    public ClientUserDTO updateUser(@PathVariable("username") String username,
                                                     @RequestBody ClientUserDTO clientUserDTO) {
-        ClientUserDTO updatedUser = clientUserService.updateUser(id, clientUserDTO);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        return clientUserService.updateUser(username, clientUserDTO);
     }
-
-//    @ExceptionHandler(UserNotFoundException.class)
-//    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
-//        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-//    }
-
-//    @ExceptionHandler(DuplicateException.class)
-//    public ResponseEntity<String> handleDuplicateUsernameException(DuplicateException e) {
-//        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-//    }
-
 
 }

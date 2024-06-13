@@ -1,6 +1,8 @@
 package com.example.service.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,9 +27,10 @@ public class ClientUser {
     private Integer id;
 
     @Column(nullable = false, unique = true,name = "c_username")
+    @Size(min = 3,max = 30,message = "Username name must be between 5 and 30 characters")
     private String username;
 
     @Column(name = "c_created_at",insertable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
 }

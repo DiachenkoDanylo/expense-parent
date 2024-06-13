@@ -1,16 +1,19 @@
-package com.example.service.dto;
+package com.example.webapp.DTO;
 /*  expense-parent
-    29.05.2024
+    08.06.2024
     @author DiachenkoDanylo
 */
 
-import com.example.service.entity.Category;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
+
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ExpenseDTO {
 
     private Integer id;
@@ -21,8 +24,7 @@ public class ExpenseDTO {
 
     private LocalDateTime expenseDate;
 
-    public ExpenseDTO() {
-        super();
-    }
+
+
 
 }

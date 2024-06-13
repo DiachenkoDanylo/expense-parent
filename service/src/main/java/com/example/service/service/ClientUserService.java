@@ -17,7 +17,9 @@ import java.util.Optional;
 
 public interface ClientUserService {
 
-    ClientUser getUserById(int userId);
+    ClientUser getUserByUsername(String username);
+
+//    ClientUser getUserById(int userId);
 
     ClientUser createClientUser(ClientUser user);
 

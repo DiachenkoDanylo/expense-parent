@@ -8,10 +8,16 @@ import com.example.service.exception.DuplicateException;
 import com.example.service.service.ClientUserServiceImpl;
 import com.example.service.service.ExpenseService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /*  expense-parent
@@ -21,16 +27,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/expense")
 @AllArgsConstructor
+@Slf4j
 public class ExpenseClientController {
 
     private final ClientUserServiceImpl clientUserService;
     private final ExpenseService expenseService;
 
+
     @GetMapping("")
     public Expense getExpenseById(@RequestParam ("id") int expId) {
         return expenseService.getExpenseById(expId);
     }
-
 
     @ResponseBody
     @PatchMapping("")
@@ -40,26 +47,24 @@ public class ExpenseClientController {
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
-    public List<ExpenseDTO> getAllByClient(@PathVariable ("userId") int id){
-        for (Expense expense :expenseService.getAllExpensesByClient(id)) {
-            System.out.println(expense.toString());
-        }
-        return expenseService.getAllExpensesDTOByClient(id);
+    @GetMapping("/{username}")
+    public List<ExpenseDTO> getAllByClient(@PathVariable ("username") String username, Principal principal) {
+        System.out.println("SELECTED PRINCIPAL \n \n \n"+principal.toString());
+        return expenseService.getAllExpensesDTOByClient(username);
     }
 
+    @GetMapping("/{username}/{categoryId}")
+    public List<ExpenseDTO> getAllByClientAndCategory(@PathVariable ("username") String username,
+                                                      @PathVariable ("categoryId") int catId) {
+        return expenseService.getAllExpensesDTOByClientCategory(username, catId);
+    }
 
     @ResponseBody
-    @PostMapping("/{userId}")
+    @PostMapping("/{username}")
     public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpenseDTO expenseDTO,
-                                                 @PathVariable ("userId") int id) {
-        try {
-            ExpenseDTO expenseDTO1 = expenseService.saveNewExpenseByClient(id,expenseDTO);
-            return new ResponseEntity<>(expenseDTO1, HttpStatus.CREATED);
-        } catch (DuplicateException e) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-        }
+                                                 @PathVariable ("username") String username) {
+        ExpenseDTO expenseDTO1 = expenseService.saveNewExpenseByClient(username,expenseDTO);
+        return new ResponseEntity<>(expenseDTO1, HttpStatus.CREATED);
     }
-
 
 }

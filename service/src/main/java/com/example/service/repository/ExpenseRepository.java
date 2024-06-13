@@ -14,5 +14,10 @@ import java.util.List;
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense,Integer> {
 
+
+    List<Expense> findExpensesByClientUserUsername(String username);
     List<Expense> findExpensesByClientUserId(int id);
+
+    List<Expense> findExpensesByClientUserUsernameAndCategory_Id(String username, int id);
+    List<Expense> findExpensesByClientUserIdAndCategoryId(int id, int catId);
 }
