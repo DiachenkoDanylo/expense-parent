@@ -33,4 +33,6 @@ public class ClientUser {
     @Column(name = "c_created_at",insertable = false)
     private LocalDateTime createdAt;
 
+
+
 }

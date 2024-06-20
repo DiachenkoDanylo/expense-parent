@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/styles/css/style.css">
+    <title th:text="${category.getName()}">Categories</title>
+</head>
+<body>
+
+<footer>
+    <nav>
+        <ul>
+            <li><a href="@{/category/}">Category</a></li>
+            <li><a href="@{/expense/}">Expenses</a></li>
+            <li><a href="@{/profile}">Profile</a></li>
+        </ul>
+    </nav>
+</footer>
+
+<div>
+    <h2 th:text="${category.getName()}">Value</h2>
+    <div th:if="${!categoryExpenseList.isEmpty()}" class="template-show">
+        <ul class="ulClass">
+            <li th:each="expense :${categoryExpenseList}">
+                <a th:href="@{/expense/{id}(id=${expense.getId()})}" th:text="${expense.getAmount()}">Value</a>
+                <p th:text="${expense.getDescription()}">Value</p>
+            </li>
+        </ul>
+    </div>
+    <div th:if="${categoryExpenseList.isEmpty()}" class="template-show">
+        <ul class="ulClass">
+            <span> You don't have any expense in <p th:text="${category.getName()}">value</p> yet</span>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

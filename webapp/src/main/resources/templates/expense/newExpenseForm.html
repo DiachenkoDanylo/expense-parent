@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<span>Create new expense</span>
+<form th:method="POST" th:action="@{/expense/}" th:object="${expense}">
+    <label for="name/">Enter description:</label>
+    <input type="text" th:field="*{description}" id="name/">
+
+    <label for="description/">Enter amount:</label>
+    <input type="text" th:field="*{amount}" id="description/">
+    <div  style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">description error</div>
+
+    <select class="form-control" id="dropDownList">
+        <option value="0">select category</option>
+        <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.getName()}"></option>
+<!--        <div  style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>-->
+    </select>
+    <br/>
+    <input type="submit" value="Update"/>
+
+</form>
+
+</body>
+</html>

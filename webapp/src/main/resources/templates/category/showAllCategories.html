@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/styles/css/style.css">
+    <title>Categories</title>
+</head>
+<body>
+
+<footer>
+    <nav>
+        <ul>
+            <li><a href="@{/category/}">Category</a></li>
+            <li><a href="@{/expense/}">Expenses</a></li>
+            <li><a href="@{/profile}">Profile</a></li>
+        </ul>
+    </nav>
+</footer>
+
+<div>
+    <h2>Categories</h2>
+    <div th:if="${!categoryList.isEmpty()}" class="template-show">
+        <ul class="ulClass">
+            <li th:each="category :${categoryList}">
+                <a th:href="@{/category/{id}(id=${category.getId()})}" th:text="${category.getName()}">Value</a>
+                <p th:text="${category.getDescription()}">Value</p>
+               </li>
+        </ul>
+    </div>
+    <div th:if="${categoryList.isEmpty()}" class="template-show">
+        <ul class="ulClass">
+            <span> You don't have any category yet</span>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

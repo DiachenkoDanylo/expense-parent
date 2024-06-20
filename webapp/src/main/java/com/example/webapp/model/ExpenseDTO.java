@@ -1,4 +1,4 @@
-package com.example.webapp.DTO;
+package com.example.webapp.model;
 /*  expense-parent
     08.06.2024
     @author DiachenkoDanylo
@@ -24,7 +24,10 @@ public class ExpenseDTO {
 
     private LocalDateTime expenseDate;
 
+    private int categoryId;
 
-
-
+    public ExpenseDTO(BigDecimal amount, String description) {
+        this.amount= amount;
+        this.description=description;
+    }
 }

@@ -12,6 +12,7 @@ import org.aspectj.weaver.ast.Not;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class ExpenseService {
     public List<ExpenseDTO> getAllExpensesDTOByClient(String username){
         List<ExpenseDTO> expenseDTOS = new ArrayList<>();
         try {
+            clientUserService.getUserByUsername(username);
             for(Expense expense : expenseRepository.findExpensesByClientUserUsername(username)) {
                 expenseDTOS.add(convertToExpenseDTO(expense));
             }
@@ -79,7 +81,10 @@ public class ExpenseService {
     }
 
     public Expense convertToExpense(ExpenseDTO expenseDTO) {
-        return this.modelMapper.map(expenseDTO, Expense.class);
+        Expense res = this.modelMapper.map(expenseDTO, Expense.class);
+        if (res.getExpenseDate()==null)
+            res.setExpenseDate(LocalDateTime.now());
+        return res;
     }
 
     public ExpenseDTO convertToExpenseDTO (Expense expense) {

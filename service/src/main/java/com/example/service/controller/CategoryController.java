@@ -29,14 +29,20 @@ public class CategoryController {
 
     @GetMapping("")
     public List<Category> getAll() {
-
         return categoryService.getAllCategories();
+    }
+
+    @GetMapping("/{username}")
+    public List<Category> getAllByClientUser(@PathVariable ("username") String username) {
+        System.out.println("\n" +
+                "\n" +
+                "INSIDE CONTROLLER");
+        return categoryService.getAllCategoriesByClient(username);
 
     }
 
-    @GetMapping("/{catId}")
-    public  Category getCategoryById(@PathVariable ("catId") int catId , Principal principal) {
-        System.out.println(principal.getName());
+    @GetMapping("{username}/{catId}")
+    public  Category getCategoryById(@PathVariable ("catId") int catId, @PathVariable ("username")String username) {
         return categoryService.getCategoryById(catId);
     }
 }
