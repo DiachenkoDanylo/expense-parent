@@ -12,8 +12,9 @@
         <ul>
             <li><a href="/category/">Category</a></li>
             <li><a href="/expense/">Expenses</a></li>
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/login">LogIn</a></li>
+            <li><a href="/profile/">Profile</a></li>
+            <li th:if="!authenticated"><a href="/login">Login</a></li>
+            <li th:if="authenticated"><a href="/logout">Logout</a></li>
         </ul>
     </nav>
 </footer>

@@ -11,15 +11,17 @@
 <footer>
     <nav>
         <ul>
-            <li><a href="@{/category/}">Category</a></li>
-            <li><a href="@{/expense/}">Expenses</a></li>
-            <li><a href="@{/profile}">Profile</a></li>
+            <li><a href="/category/">Category</a></li>
+            <li><a href="/expense/">Expenses</a></li>
+            <li><a href="/profile/">Profile</a></li>
+            <li th:if="!authenticated"><a href="/login">Login</a></li>
+            <li th:if="authenticated"><a href="/logout">Logout</a></li>
         </ul>
     </nav>
 </footer>
+<h2 th:text="${category.getName()}">Value</h2>
+<div class="layout">
 
-<div>
-    <h2 th:text="${category.getName()}">Value</h2>
     <div th:if="${!categoryExpenseList.isEmpty()}" class="template-show">
         <ul class="ulClass">
             <li th:each="expense :${categoryExpenseList}">
@@ -34,6 +36,15 @@
         </ul>
     </div>
 </div>
-
+<div class="fab-container">
+    <div class="fab-button" id="fabButton">
+        +
+    </div>
+    <div class="fab-options" id="fabOptions">
+        <a href="/addExpense">Add Expense</a>
+        <a href="/addCategory">Add Category</a>
+    </div>
+</div>
+<script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>

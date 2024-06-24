@@ -26,8 +26,9 @@ public class ExpenseDTO {
 
     private int categoryId;
 
-    public ExpenseDTO(BigDecimal amount, String description) {
+    public ExpenseDTO(BigDecimal amount, String description,int categoryId) {
         this.amount= amount;
         this.description=description;
+        this.categoryId =categoryId;
     }
 }

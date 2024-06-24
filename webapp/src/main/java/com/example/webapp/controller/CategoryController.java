@@ -25,7 +25,7 @@ public class CategoryController {
     private final ExpenseService expenseService;
     private final ClientUserService clientUserService;
 
-    @GetMapping()
+    @GetMapping("/")
     public String showAllCategoryPage(Model model, @AuthenticationPrincipal OAuth2User oAuth2User) {
 
         model.addAttribute("categoryList", categoryService.getCategoriesByClientUsername(oAuth2User));

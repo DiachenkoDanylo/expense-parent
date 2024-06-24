@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -67,22 +68,40 @@ public class ClientUserService {
         return res;
     }
 
+    public List<ExpenseDTO> findWithPagination(int page, int expensePerPage,String email) {
+        List<ExpenseDTO> res = getUsername(email);
+        int k = page*expensePerPage;
+        if(k>res.size())
+            return res.subList(k-expensePerPage,res.size());
+        return res.subList(k-expensePerPage,k);
+
+    }
+
+    public int getPages(int expensePerPage, String email) {
+        List<ExpenseDTO> res = getUsername(email);
+        return (int) Math.ceil(res.size()/expensePerPage);
+    }
+
     public void createClienUser(String email) {
         restClient.post().uri("/user").body(new ClientUserDTO(email)).retrieve();
     }
 
     public List<ExpenseDTO> getUsername(String email) {
-
-        return restClient.get()
-                .uri("/expense/{email}",email)
-                .accept(APPLICATION_JSON)
-                .exchange((request, response) -> {
-                    if (response.getStatusCode().is4xxClientError()) {
-                        throw new CustomException(response.bodyTo(CustomException.class));
-                    } else {
-                        return Arrays.stream(response.bodyTo(ExpenseDTO[].class)).toList();
-                    }
-                });
+        try {
+            return restClient.get()
+                    .uri("/expense/{email}",email)
+                    .accept(APPLICATION_JSON)
+                    .exchange((request, response) -> {
+                        if (response.getStatusCode().is4xxClientError()) {
+                            throw new CustomException(response.bodyTo(CustomException.class));
+                        } else {
+                            return Arrays.stream(response.bodyTo(ExpenseDTO[].class)).toList();
+                        }
+                    });
+        }catch (CustomException exception) {
+            createClienUser(email);
+            return null;
+        }
     }
 
     public void addExpense(OAuth2User oAuth2User,
@@ -90,7 +109,7 @@ public class ClientUserService {
         restClient.post().uri(
                 "/expense/{username}",
                 oAuth2User.getAttributes().get("email"))
-                .body(new ExpenseDTO(expensePayload.getAmount(),expensePayload.getDescription())).retrieve();
+                .body(new ExpenseDTO(expensePayload.getAmount(),expensePayload.getDescription(),expensePayload.getCategory())).retrieve();
     }
 
 }

@@ -4,6 +4,10 @@ package com.example.webapp.service;
     @author DiachenkoDanylo
 */
 
+import com.example.webapp.exception.CustomException;
+import com.example.webapp.model.ClientUserDTO;
+import com.example.webapp.model.ExpenseDTO;
+import com.example.webapp.model.ExpensePayload;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -11,8 +15,15 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 @Service
 public class ExpenseService {
 
@@ -42,4 +53,62 @@ public class ExpenseService {
                 })
                 .build();
     }
+
+
+    public List<ExpenseDTO> findByUserUsername(String email) {
+        System.out.println(restClient.get().uri("/expense/"+email)
+                .retrieve().body(String.class));
+        ExpenseDTO[] result = restClient.get()
+                .uri("/expense/{email}",email)
+                .retrieve()
+                .body(ExpenseDTO[].class);
+        List<ExpenseDTO> res = Arrays.stream(result).toList();
+        System.out.println();
+        return res;
+    }
+
+    public List<ExpenseDTO> findWithPagination(int page, int expensePerPage,String email) {
+        List<ExpenseDTO> res = getUsername(email);
+        int k = page*expensePerPage;
+        if(k>res.size())
+            return res.subList(k-expensePerPage,res.size());
+        return res.subList(k-expensePerPage,k);
+
+    }
+
+    public int getPages(int expensePerPage, String email) {
+        List<ExpenseDTO> res = getUsername(email);
+        return (int) Math.ceil(res.size()/expensePerPage);
+    }
+
+    public void createClienUser(String email) {
+        restClient.post().uri("/user").body(new ClientUserDTO(email)).retrieve();
+    }
+
+    public List<ExpenseDTO> getUsername(String email) {
+        try {
+            return restClient.get()
+                    .uri("/expense/{email}",email)
+                    .accept(APPLICATION_JSON)
+                    .exchange((request, response) -> {
+                        if (response.getStatusCode().is4xxClientError()) {
+                            throw new CustomException(response.bodyTo(CustomException.class));
+                        } else {
+                            return Arrays.stream(response.bodyTo(ExpenseDTO[].class)).toList();
+                        }
+                    });
+        }catch (CustomException exception) {
+            createClienUser(email);
+            return null;
+        }
+    }
+
+    public void addExpense(OAuth2User oAuth2User,
+                           ExpensePayload expensePayload) {
+        restClient.post().uri(
+                        "/expense/{username}",
+                        oAuth2User.getAttributes().get("email"))
+                .body(new ExpenseDTO(expensePayload.getAmount(),expensePayload.getDescription(),expensePayload.getCategory())).retrieve();
+    }
+
 }
