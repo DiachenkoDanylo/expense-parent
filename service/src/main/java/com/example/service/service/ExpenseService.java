@@ -2,9 +2,11 @@ package com.example.service.service;
 
 import com.example.service.dto.ClientUserDTO;
 import com.example.service.dto.ExpenseDTO;
+import com.example.service.dto.ExpensePayloadCategory;
 import com.example.service.entity.ClientUser;
 import com.example.service.entity.Expense;
 import com.example.service.exception.DuplicateException;
+import com.example.service.exception.NotAllowedActionException;
 import com.example.service.exception.NotFoundException;
 import com.example.service.repository.ExpenseRepository;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /*  expense-parent
     29.05.2024
@@ -27,6 +30,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final ClientUserServiceImpl clientUserService;
     private final ModelMapper modelMapper;
+    private final CategoryService categoryService;
 
     public List<ExpenseDTO> getAllExpensesDTOByClient(String username){
         List<ExpenseDTO> expenseDTOS = new ArrayList<>();
@@ -39,7 +43,6 @@ public class ExpenseService {
         }catch (NotFoundException e) {
             throw new NotFoundException("Username " + username + " are NOT exists in our service");
         }
-
     }
 
     public List<Expense> getAllExpensesByClient(String username){
@@ -54,34 +57,74 @@ public class ExpenseService {
         return expenseDTOS;
     }
 
-    public Expense getExpenseById(int id){
-        if (expenseRepository.findById(id).isPresent())
-            return expenseRepository.findById(id).get();
-        throw new NotFoundException("The payment with this id : "+id+" not found");
-    }
-
-    public ExpenseDTO saveNewExpenseByClient(String username, ExpenseDTO expenseDTO) {
+    public Expense getExpenseByUsernameAndId(int id, String username){
         try {
-            ClientUser clientUser = clientUserService.getUserByUsername(username);
-            Expense expense = convertToExpense(expenseDTO);
-            expense.setClientUser(clientUser);
-            return convertToExpenseDTO(expenseRepository.save(expense));
+            Expense exp =  expenseRepository.findById(id).get();
+            if(!exp.getClientUser().getUsername().equals(username)) {
+                throw new NotAllowedActionException("The request is not allowed to user : "+username+" ");
+            }else {
+                return exp;
+            }
         } catch (NotFoundException e) {
-            throw new NotFoundException("User with username '" + username + "' are not exists in our service");
+            throw new NotFoundException("The payment with this id : "+id+" not found");
         }
     }
 
-    public ExpenseDTO update(int expId, ExpenseDTO expenseDTO) {
-        Expense exp = getExpenseById(expId);
+    public Expense getExpenseById(int id){
+        try {
+            return expenseRepository.findById(id).get();
+        } catch (NotFoundException e) {
+            throw new NotFoundException("The payment with this id : "+id+" not found");
+        }
+    }
+
+
+//    public ExpenseDTO saveNewExpenseByClient(String username, ExpenseDTO expenseDTO) {
+//        if(expenseDTO.getCategory()==null) {
+//            try {
+//                ClientUser clientUser = clientUserService.getUserByUsername(username);
+//                Expense expense = convertToExpense(expenseDTO);
+//                expense.setClientUser(clientUser);
+//                return convertToExpenseDTO(expenseRepository.save(expense));
+//            } catch (NotFoundException e) {
+//                throw new NotFoundException("User with username '" + username + "' are not exists in our service");
+//            }
+//        }else {
+//            try {
+//                ClientUser clientUser = clientUserService.getUserByUsername(username);
+//                Expense expense = convertToExpenseWithCategory(expenseDTO);
+//                expense.setClientUser(clientUser);
+//                return convertToExpenseDTO(expenseRepository.saveExpenseByCategory(expense));
+//            } catch (NotFoundException e) {
+//                throw new NotFoundException("User with username '" + username + "' are not exists in our service");
+//            }
+//
+//        }
+//    }
+
+    public ExpenseDTO update(int expId, ExpenseDTO expenseDTO,String username) {
+        Expense exp = getExpenseByUsernameAndId(expId,username);
         exp.setExpenseDate(expenseDTO.getExpenseDate());
         exp.setAmount(expenseDTO.getAmount());
         exp.setDescription(expenseDTO.getDescription());
+        exp.setCategory(expenseDTO.getCategory());
+        exp.setExpenseDate(LocalDateTime.now());
         return convertToExpenseDTO(expenseRepository.save(exp));
 
     }
 
     public Expense convertToExpense(ExpenseDTO expenseDTO) {
+        expenseDTO.setCategory(categoryService.getCategoryById(expenseDTO.getCategory().getId()));
         Expense res = this.modelMapper.map(expenseDTO, Expense.class);
+        if (res.getExpenseDate()==null)
+            res.setExpenseDate(LocalDateTime.now());
+        return res;
+    }
+
+    public Expense convertToExpenseWithCategory(ExpensePayloadCategory expenseDTO) {
+        ExpenseDTO expenseDTO1 = new ExpenseDTO(
+                expenseDTO.getId(),expenseDTO.getAmount(),expenseDTO.getDescription(),categoryService.getCategoryById(expenseDTO.getCategory().getId()));
+        Expense res = this.modelMapper.map(expenseDTO1, Expense.class);
         if (res.getExpenseDate()==null)
             res.setExpenseDate(LocalDateTime.now());
         return res;
@@ -92,6 +135,17 @@ public class ExpenseService {
     }
 
 
+    public ExpenseDTO saveNewExpenseByClientCategory(String username, ExpensePayloadCategory expenseDTO) {
+        try {
+            ClientUser clientUser = clientUserService.getUserByUsername(username);
+            Expense expense = convertToExpenseWithCategory(expenseDTO);
+            expense.setClientUser(clientUser);
+            expenseRepository.saveExpenseByCategory(clientUserService.getUserByUsername(username).getId(),expense.getDescription(),expense.getCategory().getId(),expense.getAmount());
+            return convertToExpenseDTO(convertToExpenseWithCategory(expenseDTO));
+        } catch (NotFoundException e) {
+            throw new NotFoundException("User with username '" + username + "' are not exists in our service");
+        }
+    }
 }
 
 

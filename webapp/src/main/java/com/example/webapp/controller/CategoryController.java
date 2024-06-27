@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final ExpenseService expenseService;
     private final ClientUserService clientUserService;
+    private final ExpenseService expenseService;
 
     @GetMapping("/")
     public String showAllCategoryPage(Model model, @AuthenticationPrincipal OAuth2User oAuth2User) {
@@ -35,10 +35,11 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public String showCategoryPage(@PathVariable ("id") int id, Model model, @AuthenticationPrincipal OAuth2User oAuth2User) {
-        clientUserService.getUsername(oAuth2User.getAttributes().get("email").toString()).stream().filter(expenseDTO -> expenseDTO.getCategoryId()==id).forEach(expenseDTO -> System.out.println(expenseDTO.getCategoryId()));
+        clientUserService.getUsername(oAuth2User.getAttributes().get("email").toString()).stream();
 
         model.addAttribute("category", categoryService.getCategoryById(oAuth2User, id));
-        model.addAttribute("categoryExpenseList", clientUserService.getUsername(oAuth2User.getAttributes().get("email").toString()).stream().filter(expenseDTO -> expenseDTO.getCategoryId()==id).toList());
+        System.out.println(expenseService.getAllByCategoryAndUser(oAuth2User.getAttributes().get("email").toString(),id));
+        model.addAttribute("categoryExpenseList", clientUserService.getUsername(oAuth2User.getAttributes().get("email").toString()).stream());
         return "category/showCategory";
     }
 

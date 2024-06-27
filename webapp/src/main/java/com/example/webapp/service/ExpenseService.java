@@ -30,9 +30,10 @@ public class ExpenseService {
     private final RestClient restClient;
 
     private final OAuth2AuthorizedClientManager authorizedClientManager;
+    private final CategoryService categoryService;
 
     public ExpenseService(ClientRegistrationRepository clientRegistrationRepository,
-                             OAuth2AuthorizedClientRepository authorizedClientRepository) {
+                          OAuth2AuthorizedClientRepository authorizedClientRepository, CategoryService categoryService) {
         this.authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);
 
@@ -45,30 +46,31 @@ public class ExpenseService {
                                                 .principal(SecurityContextHolder.getContext().getAuthentication())
                                                 .build())
                                 .getAccessToken().getTokenValue();
-
                         request.getHeaders().setBearerAuth(token);
                     }
 
                     return execution.execute(request, body);
                 })
                 .build();
+        this.categoryService = categoryService;
     }
 
 
-    public List<ExpenseDTO> findByUserUsername(String email) {
-        System.out.println(restClient.get().uri("/expense/"+email)
+
+
+    public List<ExpenseDTO> getAllByCategoryAndUser(String email,int id) {
+        System.out.println(restClient.get().uri("/expense/"+email+"/"+id)
                 .retrieve().body(String.class));
         ExpenseDTO[] result = restClient.get()
                 .uri("/expense/{email}",email)
                 .retrieve()
                 .body(ExpenseDTO[].class);
         List<ExpenseDTO> res = Arrays.stream(result).toList();
-        System.out.println();
         return res;
     }
 
     public List<ExpenseDTO> findWithPagination(int page, int expensePerPage,String email) {
-        List<ExpenseDTO> res = getUsername(email);
+        List<ExpenseDTO> res = getExpensesByUsername(email);
         int k = page*expensePerPage;
         if(k>res.size())
             return res.subList(k-expensePerPage,res.size());
@@ -77,7 +79,7 @@ public class ExpenseService {
     }
 
     public int getPages(int expensePerPage, String email) {
-        List<ExpenseDTO> res = getUsername(email);
+        List<ExpenseDTO> res = getExpensesByUsername(email);
         return (int) Math.ceil(res.size()/expensePerPage);
     }
 
@@ -85,13 +87,14 @@ public class ExpenseService {
         restClient.post().uri("/user").body(new ClientUserDTO(email)).retrieve();
     }
 
-    public List<ExpenseDTO> getUsername(String email) {
+    public List<ExpenseDTO> getExpensesByUsername(String email) {
         try {
             return restClient.get()
                     .uri("/expense/{email}",email)
                     .accept(APPLICATION_JSON)
                     .exchange((request, response) -> {
                         if (response.getStatusCode().is4xxClientError()) {
+                            System.out.println(response.getStatusCode().toString());
                             throw new CustomException(response.bodyTo(CustomException.class));
                         } else {
                             return Arrays.stream(response.bodyTo(ExpenseDTO[].class)).toList();
@@ -103,12 +106,58 @@ public class ExpenseService {
         }
     }
 
+    public ExpenseDTO getExpenseByUsernameAndId(int id,OAuth2User oAuth2User) {
+        return restClient.get()
+                .uri("/expense/{username}/?id={id}",oAuth2User.getAttributes().get("email").toString(),id)
+                .accept(APPLICATION_JSON)
+                .exchange((request, response) -> {
+                    if (response.getStatusCode().is4xxClientError()) {
+                        throw new CustomException(response.bodyTo(CustomException.class));
+                    } else {
+                        return response.bodyTo(ExpenseDTO.class);
+                    }
+                });
+
+    };
+
+
     public void addExpense(OAuth2User oAuth2User,
                            ExpensePayload expensePayload) {
+        ExpenseDTO expenseDTO= new ExpenseDTO(
+                expensePayload.getAmount(),
+                expensePayload.getDescription(),
+                categoryService.getCategoryById(oAuth2User,expensePayload.getCategory()));
+
         restClient.post().uri(
                         "/expense/{username}",
-                        oAuth2User.getAttributes().get("email"))
-                .body(new ExpenseDTO(expensePayload.getAmount(),expensePayload.getDescription(),expensePayload.getCategory())).retrieve();
+                        oAuth2User.getAttributes().get("email").toString())
+                .body(expenseDTO).retrieve();
     }
+
+    public void updateExpense(OAuth2User oAuth2User,
+                           ExpensePayload expensePayload,int id) {
+        ExpenseDTO expenseDTO= new ExpenseDTO(
+                id,
+                expensePayload.getAmount(),
+                expensePayload.getDescription(),
+                categoryService.getCategoryById(oAuth2User,expensePayload.getCategory()));
+
+        System.out.println("inside updateExpense \n \n \n "+expenseDTO.toString()+ "\n \n \n ");
+//        restClient.patch().uri(
+//                        "/expense/{username}",
+//                        oAuth2User.getAttributes().get("email").toString())
+//                .body(expenseDTO).retrieve();
+
+        String uri = String.format("/expense/%s?id=%d",
+                oAuth2User.getAttributes().get("email").toString(), id);
+
+        restClient.patch()
+                .uri(uri)
+                .body(expenseDTO)  // Use bodyValue to set the request body
+                .retrieve()
+                ;
+    }
+
+
 
 }

@@ -104,12 +104,5 @@ public class ClientUserService {
         }
     }
 
-    public void addExpense(OAuth2User oAuth2User,
-                           ExpensePayload expensePayload) {
-        restClient.post().uri(
-                "/expense/{username}",
-                oAuth2User.getAttributes().get("email"))
-                .body(new ExpenseDTO(expensePayload.getAmount(),expensePayload.getDescription(),expensePayload.getCategory())).retrieve();
-    }
 
 }

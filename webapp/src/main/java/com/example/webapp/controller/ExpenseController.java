@@ -4,6 +4,7 @@ package com.example.webapp.controller;
     @author DiachenkoDanylo
 */
 
+import com.example.webapp.exception.CustomException;
 import com.example.webapp.model.ExpenseDTO;
 import com.example.webapp.model.ExpensePayload;
 import com.example.webapp.service.CategoryService;
@@ -29,7 +30,7 @@ public class ExpenseController {
                               @RequestParam(value = "expenses_per_page", defaultValue = "10", required = false) Integer expensesPerPage,
                               Model model, @AuthenticationPrincipal OAuth2User oAuth2User) {
         if (page == null || expensesPerPage == null) {
-            model.addAttribute("expenseList", expenseService.getUsername(oAuth2User.getAttributes().get("email").toString()));
+            model.addAttribute("expenseList", expenseService.getExpensesByUsername(oAuth2User.getAttributes().get("email").toString()));
         }else {
             model.addAttribute("expenseList", expenseService.findWithPagination(page, expensesPerPage,oAuth2User.getAttributes().get("email").toString()));
             model.addAttribute("page", page);
@@ -45,8 +46,34 @@ public class ExpenseController {
                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().forEach(error -> System.out.println(error.toString()));
-            return null; }
+            return null;
+        }
         expenseService.addExpense(oAuth2User,expensePayload);
+        return "redirect:/expense/";
+    }
+
+    @GetMapping("/edit")
+    public String editExpense(Model model,@RequestParam(name = "id") int id, @AuthenticationPrincipal OAuth2User oAuth2User,
+                              @ModelAttribute("expense") ExpenseDTO expenseDTO) {
+        try {
+            model.addAttribute("expense",expenseService.getExpenseByUsernameAndId(id,oAuth2User));
+            model.addAttribute("categories",categoryService.getCategoriesByClientUsername(oAuth2User));
+        }catch (CustomException e) {
+            return "redirect:/expense/";
+        }
+        return "expense/editExpense";
+    }
+
+    @PostMapping("/update")
+    public String updateExpense(@AuthenticationPrincipal OAuth2User oAuth2User,
+                                @ModelAttribute("expense") ExpensePayload expensePayload,
+                                @RequestParam("id")int id,
+                                BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getFieldErrors().forEach(error -> System.out.println(error.toString()));
+            return null;
+        }
+        expenseService.updateExpense(oAuth2User,expensePayload,id);
         return "redirect:/expense/";
     }
 
@@ -58,8 +85,7 @@ public class ExpenseController {
 
     @GetMapping("/new")
     public String addExpenseForm(Model model, @AuthenticationPrincipal OAuth2User oAuth2User,
-                                 @ModelAttribute("expense") ExpenseDTO expenseDTO) {
-
+                                 @ModelAttribute("expense") ExpenseDTO expenseDTO ) {
         model.addAttribute("categories",categoryService.getCategoriesByClientUsername(oAuth2User));
         return "expense/newExpenseForm";
     }

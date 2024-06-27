@@ -13,7 +13,9 @@ import java.util.Date;
 @Data
 public class ExpenseDTO {
 
-    private Integer id;
+    private int id;
+
+    private Category category;
 
     private BigDecimal amount;
 
@@ -25,4 +27,10 @@ public class ExpenseDTO {
         super();
     }
 
+    public ExpenseDTO(int id, BigDecimal amount, String description, Category categoryById) {
+        this.id=id;
+        this.amount=amount;
+        this.category=categoryById;
+        this.description=description;
+    }
 }

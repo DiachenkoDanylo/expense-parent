@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ExpenseDTO {
 
-    private Integer id;
+    private int id;
 
     private BigDecimal amount;
 
@@ -24,11 +24,17 @@ public class ExpenseDTO {
 
     private LocalDateTime expenseDate;
 
-    private int categoryId;
+    private CategoryDTO category;
 
-    public ExpenseDTO(BigDecimal amount, String description,int categoryId) {
+    public ExpenseDTO(BigDecimal amount, String description,CategoryDTO category) {
         this.amount= amount;
         this.description=description;
-        this.categoryId =categoryId;
+        this.category =category;
+    }
+    public ExpenseDTO(int id, BigDecimal amount, String description,CategoryDTO category) {
+        this.id=id;
+        this.amount= amount;
+        this.description=description;
+        this.category =category;
     }
 }
