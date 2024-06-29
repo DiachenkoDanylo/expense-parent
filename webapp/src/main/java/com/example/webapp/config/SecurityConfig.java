@@ -38,13 +38,11 @@ public class SecurityConfig {
         OidcUserService oidcUserService = new OidcUserService();
         return userRequest -> {
             OidcUser oidcUser = oidcUserService.loadUser(userRequest);
-
             List<GrantedAuthority> grantedAuthorities = Stream.concat(oidcUser.getAuthorities().stream(),
                             oidcUser.getClaimAsStringList("groups").stream()
                                     .filter(authority -> authority.startsWith("ROLE_"))
                                     .map(SimpleGrantedAuthority::new))
                     .toList();
-
             return new DefaultOidcUser(grantedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo(),
                     "preferred_username");
         };

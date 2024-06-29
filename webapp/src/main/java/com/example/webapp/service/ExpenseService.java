@@ -120,6 +120,22 @@ public class ExpenseService {
 
     };
 
+    public List<ExpenseDTO> getExpensesByUsernameAndCategory(int id,OAuth2User oAuth2User) {
+        return restClient.get()
+                .uri("/expense/{username}/category/{categoryId}",
+                        oAuth2User.getAttributes().get("email").toString(),id)
+                .accept(APPLICATION_JSON)
+                .exchange((request, response) -> {
+                    if (response.getStatusCode().is4xxClientError()) {
+                        throw new CustomException(response.bodyTo(CustomException.class));
+                    } else {
+                        return Arrays.stream( response.bodyTo(ExpenseDTO[].class)).toList();
+                    }
+                });
+
+    };
+
+
 
     public void addExpense(OAuth2User oAuth2User,
                            ExpensePayload expensePayload) {
@@ -136,12 +152,20 @@ public class ExpenseService {
 
     public void updateExpense(OAuth2User oAuth2User,
                            ExpensePayload expensePayload,int id) {
-        ExpenseDTO expenseDTO= new ExpenseDTO(
-                id,
-                expensePayload.getAmount(),
-                expensePayload.getDescription(),
-                categoryService.getCategoryById(oAuth2User,expensePayload.getCategory()));
-
+        ExpenseDTO expenseDTO;
+        if(expensePayload.getCategory()==0){
+             expenseDTO= new ExpenseDTO(
+                    id,
+                    expensePayload.getAmount(),
+                    expensePayload.getDescription(),
+                    null);
+        } else {
+             expenseDTO= new ExpenseDTO(
+                    id,
+                    expensePayload.getAmount(),
+                    expensePayload.getDescription(),
+                    categoryService.getCategoryById(oAuth2User,expensePayload.getCategory()));
+        }
         System.out.println("inside updateExpense \n \n \n "+expenseDTO.toString()+ "\n \n \n ");
 //        restClient.patch().uri(
 //                        "/expense/{username}",
@@ -154,10 +178,6 @@ public class ExpenseService {
         restClient.patch()
                 .uri(uri)
                 .body(expenseDTO)  // Use bodyValue to set the request body
-                .retrieve()
-                ;
+                .retrieve();
     }
-
-
-
 }

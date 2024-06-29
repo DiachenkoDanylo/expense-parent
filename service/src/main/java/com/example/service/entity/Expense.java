@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "t_expense")
 public class Expense {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "c_id")
@@ -46,6 +47,4 @@ public class Expense {
 
     @Column(name = "c_expense_date")
     private LocalDateTime expenseDate;
-
-
 }

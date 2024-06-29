@@ -52,5 +52,4 @@ public class ClientUserController {
                                                     @RequestBody ClientUserDTO clientUserDTO) {
         return clientUserService.updateUser(username, clientUserDTO);
     }
-
 }

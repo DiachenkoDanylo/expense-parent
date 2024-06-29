@@ -6,6 +6,8 @@ package com.example.webapp.service;
 
 import com.example.webapp.model.CategoryDTO;
 import com.example.webapp.exception.CustomException;
+import com.example.webapp.model.ExpenseDTO;
+import com.example.webapp.model.ExpensePayload;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -53,7 +55,6 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> getCategoriesByClientUsername(OAuth2User oAuth2User) {
-
         return restClient.get()
                 .uri("/category/{email}",oAuth2User.getAttributes().get("email"))
                 .accept(APPLICATION_JSON)
@@ -67,7 +68,57 @@ public class CategoryService {
     }
 
     public CategoryDTO getCategoryById(OAuth2User oAuth2User, int id) {
-       return  getCategoriesByClientUsername(oAuth2User).stream().filter(categoryDTO -> categoryDTO.getId()==id).findAny().get();
+        return restClient.get()
+                .uri("/category/{email}/{id}",oAuth2User.getAttributes().get("email"),id)
+                .accept(APPLICATION_JSON)
+                .exchange((request, response) -> {
+                    if (response.getStatusCode().is4xxClientError()) {
+                        throw new CustomException(response.bodyTo(CustomException.class));
+                    } else {
+                        return response.bodyTo(CategoryDTO.class);
+                    }
+                });
+    }
+
+    public void addNewCategory(OAuth2User oAuth2User,
+                               CategoryDTO categoryDTO) {
+        CategoryDTO categoryDTO1= new CategoryDTO(
+                categoryDTO.getName(),
+                categoryDTO.getDescription());
+        String uri = String.format("/category/{username}",
+                oAuth2User.getAttributes().get("email").toString());
+
+//        restClient.post()
+//                .uri(uri)
+//                .body(categoryDTO1)  // Use bodyValue to set the request body
+//                .retrieve();
+        restClient.post().uri(
+                        "/category/{username}",
+                        oAuth2User.getAttributes().get("email").toString())
+                .body(categoryDTO1).retrieve();
+        System.out.println(categoryDTO.toString()+"\n \n \n \n ");
+    }
+
+    public void updateCategory(OAuth2User oAuth2User,
+                              CategoryDTO categoryDTO, int id) {
+        CategoryDTO categoryDTO1= new CategoryDTO(
+                id,
+                categoryDTO.getName(),
+                categoryDTO.getDescription());
+
+        System.out.println("inside updateCategory \n \n \n "+categoryDTO1.toString()+ "\n \n \n ");
+//        restClient.patch().uri(
+//                        "/expense/{username}",
+//                        oAuth2User.getAttributes().get("email").toString())
+//                .body(expenseDTO).retrieve();
+
+        String uri = String.format("/category/%s?id=%d",
+                oAuth2User.getAttributes().get("email").toString(), id);
+
+        restClient.patch()
+                .uri(uri)
+                .body(categoryDTO1)  // Use bodyValue to set the request body
+                .retrieve();
     }
 
 }

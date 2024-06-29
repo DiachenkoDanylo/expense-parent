@@ -35,5 +35,4 @@ public class Category {
     @Column(nullable = false,name = "c_description")
     @Size(min = 10,max = 200,message = "Category description  name must be between 10 and 200 characters")
     private String description;
-
 }

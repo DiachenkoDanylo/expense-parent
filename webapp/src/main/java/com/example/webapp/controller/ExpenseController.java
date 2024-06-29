@@ -67,7 +67,7 @@ public class ExpenseController {
     @PostMapping("/update")
     public String updateExpense(@AuthenticationPrincipal OAuth2User oAuth2User,
                                 @ModelAttribute("expense") ExpensePayload expensePayload,
-                                @RequestParam("id")int id,
+                                @RequestParam("id") int id,
                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().forEach(error -> System.out.println(error.toString()));

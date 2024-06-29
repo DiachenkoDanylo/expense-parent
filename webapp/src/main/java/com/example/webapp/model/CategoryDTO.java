@@ -21,4 +21,9 @@ public class CategoryDTO {
                 this.name =name;
                 this.description = description;
         }
+
+        public CategoryDTO(String name, String description) {
+                this.name =name;
+                this.description = description;
+        }
 }

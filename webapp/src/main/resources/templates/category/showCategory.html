@@ -21,16 +21,28 @@
 </footer>
 <h2 th:text="${category.getName()}">Value</h2>
 <div class="layout">
-
-    <div th:if="${!categoryExpenseList.isEmpty()}" class="template-show">
-        <ul class="ulClass">
-            <li th:each="expense :${categoryExpenseList}">
-                <a th:href="@{/expense/{id}(id=${expense.getId()})}" th:text="${expense.getAmount()}">Value</a>
-                <p th:text="${expense.getDescription()}">Value</p>
-            </li>
-        </ul>
+    <div th:if="${!expenseList.isEmpty()}" th:each="expense : ${expenseList}" class="expense-card">
+        <div class="expense-card-layout">
+            <form th:action="@{/expense/edit}" method="get">
+                <input type="hidden" name="id" th:value="${expense.getId()}">
+                <button class="button2" type="submit" >
+                    <img class="icon-md" src="/images/ruler-cross-pen-svgrepo-com.svg" >
+                </button>
+            </form>
+            <form th:action="@{/expense/delete}" method="post" >
+                <input type="hidden" name="id" th:value="${expense.getId()}">
+                <button class="button1" type="submit" >
+                    <img class="icon-md" src="/images/close-square-svgrepo-com.svg" >
+                </button>
+            </form>
+        </div>
+        <div class="expense-description">
+            <p th:text="${expense.getAmount()}">Value</p>
+            <p th:text="${expense.getDescription()}">Value</p>
+            <p th:text="${expense.getExpenseDate().toLocalTime()}">Value</p>
+        </div>
     </div>
-    <div th:if="${categoryExpenseList.isEmpty()}" class="template-show">
+    <div th:if="${expenseList.isEmpty()}" class="template-show">
         <ul class="ulClass">
             <span> You don't have any expense in <p th:text="${category.getName()}">value</p> yet</span>
         </ul>

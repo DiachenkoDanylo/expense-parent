@@ -44,8 +44,6 @@ public class ExpenseClientController {
         return expenseService.getExpenseById(expId);
     }
 
-
-
     @GetMapping("/{username}")
     public List<ExpenseDTO> getAllByClient(@PathVariable ("username") String username) {
         return expenseService.getAllExpensesDTOByClient(username);
@@ -54,15 +52,8 @@ public class ExpenseClientController {
     @GetMapping("/{username}/")
     public Expense getExpenseByUsernameAndId(@RequestParam ("id") int expId,
                                              @PathVariable("username") String username) {
-
             return expenseService.getExpenseByUsernameAndId(expId,username);
-
     }
-//    @GetMapping("/{username}")
-//    public List<ExpenseDTO> getAllByClient(@PathVariable ("username") String username, @AuthenticationPrincipal OAuth2User oAuth2User) {
-//        System.out.println("SELECTED \n @AUTHENTICATION PRINCIPAL \n \n \n "+ oAuth2User.getAttributes().toString());
-//        return expenseService.getAllExpensesDTOByClient(username);
-//    }
 
     @GetMapping("/{username}/category/{categoryId}")
     public List<ExpenseDTO> getAllByClientAndCategory(@PathVariable ("username") String username,
@@ -77,15 +68,13 @@ public class ExpenseClientController {
         ExpenseDTO expenseDTO1 = expenseService.saveNewExpenseByClientCategory(username,expenseDTO);
         return new ResponseEntity<>(expenseDTO1, HttpStatus.CREATED);
     }
+
     @ResponseBody
     @PatchMapping("/{username}")
     public ResponseEntity<ExpenseDTO> updateExpense(@RequestParam ("id") int expId,
                                                     @RequestBody ExpenseDTO expenseDTO,
                                                     @PathVariable ("username") String username) {
-        System.out.println("\n \n \n "+"expense ID" +
-                expId+"\n"+"expense DTO " +expenseDTO.toString()+"\n username is"+username);
         ExpenseDTO updated = expenseService.update(expId,expenseDTO,username);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
-
 }
