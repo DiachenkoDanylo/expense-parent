@@ -37,7 +37,9 @@ public class CategoryService {
         this.authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);
 
-        this.restClient = RestClient.builder().baseUrl("http://localhost:8081")
+        this.restClient = RestClient.builder()
+//                .baseUrl("http://172.17.0.1:6062")
+                .baseUrl("http://localhost:6062")
                 .requestInterceptor((request, body, execution) -> {
                     if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                         var token = this.authorizedClientManager.authorize(
@@ -85,13 +87,6 @@ public class CategoryService {
         CategoryDTO categoryDTO1= new CategoryDTO(
                 categoryDTO.getName(),
                 categoryDTO.getDescription());
-        String uri = String.format("/category/{username}",
-                oAuth2User.getAttributes().get("email").toString());
-
-//        restClient.post()
-//                .uri(uri)
-//                .body(categoryDTO1)  // Use bodyValue to set the request body
-//                .retrieve();
         restClient.post().uri(
                         "/category/{username}",
                         oAuth2User.getAttributes().get("email").toString())
@@ -105,19 +100,32 @@ public class CategoryService {
                 id,
                 categoryDTO.getName(),
                 categoryDTO.getDescription());
-
         System.out.println("inside updateCategory \n \n \n "+categoryDTO1.toString()+ "\n \n \n ");
-//        restClient.patch().uri(
-//                        "/expense/{username}",
-//                        oAuth2User.getAttributes().get("email").toString())
-//                .body(expenseDTO).retrieve();
+        restClient.patch().uri(
+                        "/category/{username}",
+                        oAuth2User.getAttributes().get("email").toString())
+                .body(categoryDTO1).retrieve();
+    }
 
-        String uri = String.format("/category/%s?id=%d",
-                oAuth2User.getAttributes().get("email").toString(), id);
+    public void deleteCategory(OAuth2User oAuth2User, Integer id, boolean include) {
+        if (include) {
+            deleteCategoryWithExpenses(oAuth2User,id);
+        } else {
+            deleteCategoryWithoutExpenses(oAuth2User, id);
+        }
+    }
 
-        restClient.patch()
-                .uri(uri)
-                .body(categoryDTO1)  // Use bodyValue to set the request body
+    public void deleteCategoryWithExpenses(OAuth2User oAuth2User, Integer id) {
+        restClient.delete().uri(
+                        "/category/{username}?id={id}&with=true",
+                        oAuth2User.getAttributes().get("email").toString(),id)
+                .retrieve();
+    }
+
+    public void deleteCategoryWithoutExpenses(OAuth2User oAuth2User, Integer id) {
+        restClient.delete().uri(
+                        "/category/{username}?id={id}&with=false",
+                        oAuth2User.getAttributes().get("email").toString(),id)
                 .retrieve();
     }
 

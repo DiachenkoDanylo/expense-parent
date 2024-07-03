@@ -25,4 +25,5 @@ public interface ExpenseRepository extends JpaRepository<Expense,Integer> {
             nativeQuery = true)
     void saveExpenseByCategory(Integer a, String b, Integer c,BigDecimal d);
     List<Expense> findExpensesByClientUserIdAndCategoryId(int id, int catId);
+
 }

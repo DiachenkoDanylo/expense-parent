@@ -6,8 +6,10 @@ import com.example.service.dto.ExpensePayloadCategory;
 import com.example.service.entity.Category;
 import com.example.service.entity.ClientUser;
 import com.example.service.entity.Expense;
+import com.example.service.exception.NotAllowedActionException;
 import com.example.service.exception.NotFoundException;
 import com.example.service.repository.CategoryRepository;
+import com.example.service.repository.ExpenseRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -57,9 +59,35 @@ public class CategoryService {
         }
     }
 
+    public Category updateCategory(String username, CategoryPayload categoryPayload) {
+        try {
+            if(categoryRepository.findById(categoryPayload.getId()).get().getClientUser().getUsername().equals(username)) {
+                Category category= categoryRepository.findById(categoryPayload.getId()).get();
+                category.setDescription(categoryPayload.getDescription());
+                category.setName(categoryPayload.getName());
+                categoryRepository.save(category);
+                return category;
+            }else {
+                throw new NotAllowedActionException("not allowed");
+            }
+        } catch (NotFoundException e) {
+            throw new NotFoundException("User with username '" + username + "' are not exists in our service");
+        }
+    }
+
     public Category convertToCategory (CategoryPayload categoryPayload) {
         return this.modelMapper.map(categoryPayload, Category.class);
     }
 
-
+//
+    public void deleteCategoryByUsernameAndId(String username, int catId, boolean include) {
+        if(this.getCategoryById(catId).getClientUser().getUsername().equals(username)){
+             categoryRepository.deleteById(catId);
+             System.out.println("not INCLUDE AT DELETING");
+            }
+    }
+//
+//    public void deleteCategoryByUsernameAndIdWithoutExpenses(String username, int catId){
+//
+//    }
 }

@@ -3,6 +3,7 @@ package com.example.webapp.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.OAuth2LoginDsl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -33,6 +35,7 @@ public class SecurityConfig {
                 .build();
     }
 
+
     @Bean
     public OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
         OidcUserService oidcUserService = new OidcUserService();
@@ -47,4 +50,5 @@ public class SecurityConfig {
                     "preferred_username");
         };
     }
+
 }

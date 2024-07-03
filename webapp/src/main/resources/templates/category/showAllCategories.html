@@ -31,7 +31,7 @@
                         <img class="icon-md" src="/images/ruler-cross-pen-svgrepo-com.svg" >
                     </button>
                 </form>
-                <form th:action="@{/category/delete}" method="post" >
+                <form th:action="@{/category/edit}" method="get">
                     <input type="hidden" name="id" th:value="${category.getId()}">
                     <button class="button1" type="submit" >
                         <img class="icon-md" src="/images/close-square-svgrepo-com.svg" >

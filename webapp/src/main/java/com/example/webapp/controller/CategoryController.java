@@ -79,8 +79,9 @@ public class CategoryController {
             bindingResult.getFieldErrors().forEach(error -> System.out.println(error.toString()));
             return null;
         }
+        System.out.println("\n \n \n"+category.toString()+"\n \n \n ");
         categoryService.updateCategory(oAuth2User,category,id);
-        return "redirect:/expense/";
+        return "redirect:/category/";
     }
 
     @GetMapping("/new")
@@ -95,6 +96,7 @@ public class CategoryController {
                                 @RequestParam("id") Integer id) {
         System.out.println(cascade);
         System.out.println("Id of deleting card is "+id);
+        categoryService.deleteCategory(oAuth2User,id,cascade);
 
         //model.addAttribute("categories",dtoList);
         return "redirect:/category/";

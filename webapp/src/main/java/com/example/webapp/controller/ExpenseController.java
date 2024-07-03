@@ -94,6 +94,7 @@ public class ExpenseController {
     public String deleteExpense(Model model, @AuthenticationPrincipal OAuth2User oAuth2User,
                                 @RequestParam("id") Integer id) {
         System.out.println("Id of deleting card is "+id);
+        expenseService.deleteExpense(oAuth2User,id);
 
         //model.addAttribute("categories",dtoList);
         return "redirect:/expense/";

@@ -38,7 +38,8 @@ public class ClientUserService {
                 clientRegistrationRepository, authorizedClientRepository);
 
         this.restClient = RestClient.builder()
-            .baseUrl("http://localhost:8081")
+                .baseUrl("http://localhost:6062")
+//                .baseUrl("http://172.17.0.1:6062")
             .requestInterceptor((request, body, execution) -> {
                 if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                     var token = this.authorizedClientManager.authorize(

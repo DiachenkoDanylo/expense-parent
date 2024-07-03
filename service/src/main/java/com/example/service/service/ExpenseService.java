@@ -122,9 +122,16 @@ public class ExpenseService {
     }
 
     public Expense convertToExpenseWithCategory(ExpensePayloadCategory expenseDTO) {
-        ExpenseDTO expenseDTO1 = new ExpenseDTO(
-                expenseDTO.getId(),expenseDTO.getAmount(),expenseDTO.getDescription(),categoryService.getCategoryById(expenseDTO.getCategory().getId()));
-        Expense res = this.modelMapper.map(expenseDTO1, Expense.class);
+        ExpenseDTO expenseDTO1;
+        if(expenseDTO.getCategory()==null) {
+            expenseDTO1 = new ExpenseDTO(
+                    expenseDTO.getId(),expenseDTO.getAmount(),expenseDTO.getDescription(),null);
+        }else {
+            expenseDTO1 = new ExpenseDTO(
+                    expenseDTO.getId(),expenseDTO.getAmount(),expenseDTO.getDescription(),categoryService.getCategoryById(expenseDTO.getCategory().getId()));
+
+        }
+         Expense res = this.modelMapper.map(expenseDTO1, Expense.class);
         if (res.getExpenseDate()==null)
             res.setExpenseDate(LocalDateTime.now());
         return res;
@@ -140,10 +147,34 @@ public class ExpenseService {
             ClientUser clientUser = clientUserService.getUserByUsername(username);
             Expense expense = convertToExpenseWithCategory(expenseDTO);
             expense.setClientUser(clientUser);
-            expenseRepository.saveExpenseByCategory(clientUserService.getUserByUsername(username).getId(),expense.getDescription(),expense.getCategory().getId(),expense.getAmount());
+            if(expense.getCategory()==null) {
+                expenseRepository.saveExpenseByCategory(clientUserService.getUserByUsername(username).getId(),expense.getDescription(),null,expense.getAmount());
+            }else {
+                expenseRepository.saveExpenseByCategory(clientUserService.getUserByUsername(username).getId(),expense.getDescription(),expense.getCategory().getId(),expense.getAmount());
+            }
+            System.out.println(expense.toString());
+            //expenseRepository.saveExpenseByCategory(clientUserService.getUserByUsername(username).getId(),expense.getDescription(),expense.getCategory().getId(),expense.getAmount());
             return convertToExpenseDTO(convertToExpenseWithCategory(expenseDTO));
         } catch (NotFoundException e) {
             throw new NotFoundException("User with username '" + username + "' are not exists in our service");
+        }
+    }
+
+    public void deleteExpenseByUsernameAndId(String username, int expId) {
+        if(getExpenseById(expId).getClientUser().getUsername().equals(username)) {
+            expenseRepository.deleteById(expId);
+        } else {
+            throw new NotAllowedActionException("User with username "+username+" not allowed to do that");
+        }
+    }
+
+    public void updateAfterDeletingCategory(String username, int catId, boolean include) {
+        List<Expense> expenses = expenseRepository.findExpensesByClientUserUsernameAndCategory_Id(username,catId);
+        if (include) {
+            expenseRepository.deleteAll(expenses);
+        }else{
+            expenses.forEach(expense -> expense.setCategory(null));
+            expenseRepository.saveAll(expenses);
         }
     }
 }

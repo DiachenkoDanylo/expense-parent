@@ -77,4 +77,14 @@ public class ExpenseClientController {
         ExpenseDTO updated = expenseService.update(expId,expenseDTO,username);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
+
+    @ResponseBody
+    @DeleteMapping("/{username}")
+    public ResponseEntity<String> deleteExpense(@RequestParam ("id") int expId,
+                                                    @PathVariable ("username") String username) {
+        expenseService.deleteExpenseByUsernameAndId(username,expId);
+        System.out.println("\n \n"+username+"\n \n"+expId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

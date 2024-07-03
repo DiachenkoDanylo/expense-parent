@@ -8,6 +8,7 @@ import com.example.webapp.exception.CustomException;
 import com.example.webapp.model.ClientUserDTO;
 import com.example.webapp.model.ExpenseDTO;
 import com.example.webapp.model.ExpensePayload;
+import lombok.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -38,7 +39,9 @@ public class ExpenseService {
                 clientRegistrationRepository, authorizedClientRepository);
 
         this.restClient = RestClient.builder()
-                .baseUrl("http://localhost:8081")
+
+                .baseUrl("http://localhost:6062")
+//                .baseUrl("http://172.17.0.1:6062")
                 .requestInterceptor((request, body, execution) -> {
                     if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                         var token = this.authorizedClientManager.authorize(
@@ -71,6 +74,9 @@ public class ExpenseService {
 
     public List<ExpenseDTO> findWithPagination(int page, int expensePerPage,String email) {
         List<ExpenseDTO> res = getExpensesByUsername(email);
+        if (res == null) {
+            return res;
+        }
         int k = page*expensePerPage;
         if(k>res.size())
             return res.subList(k-expensePerPage,res.size());
@@ -139,10 +145,18 @@ public class ExpenseService {
 
     public void addExpense(OAuth2User oAuth2User,
                            ExpensePayload expensePayload) {
-        ExpenseDTO expenseDTO= new ExpenseDTO(
-                expensePayload.getAmount(),
-                expensePayload.getDescription(),
-                categoryService.getCategoryById(oAuth2User,expensePayload.getCategory()));
+        ExpenseDTO expenseDTO;
+        if(expensePayload.getCategory()==0) {
+             expenseDTO = new ExpenseDTO(
+                    expensePayload.getAmount(),
+                    expensePayload.getDescription(),
+                    null);
+        }else {
+             expenseDTO = new ExpenseDTO(
+                    expensePayload.getAmount(),
+                    expensePayload.getDescription(),
+                    categoryService.getCategoryById(oAuth2User,expensePayload.getCategory()));
+        }
 
         restClient.post().uri(
                         "/expense/{username}",
@@ -178,6 +192,13 @@ public class ExpenseService {
         restClient.patch()
                 .uri(uri)
                 .body(expenseDTO)  // Use bodyValue to set the request body
+                .retrieve();
+    }
+
+    public void deleteExpense(OAuth2User oAuth2User, Integer id) {
+        restClient.delete().uri(
+                        "/expense/{username}?id={id}",
+                        oAuth2User.getAttributes().get("email").toString(),id)
                 .retrieve();
     }
 }
