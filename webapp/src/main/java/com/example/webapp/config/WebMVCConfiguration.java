@@ -26,8 +26,6 @@ public class WebMVCConfiguration implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/js/");
     }
 
-
-
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();

@@ -28,4 +28,11 @@ public class CustomExceptionHandler {
         log.error(exception.getMessage(), exception);
         return new ResponseError(exception.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseError handleNotAllowedAction(NotAllowedActionException exception) {
+        log.error(exception.getMessage(), exception);
+        return new ResponseError(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

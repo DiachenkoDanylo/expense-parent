@@ -2,6 +2,7 @@ package com.example.webapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -10,10 +11,18 @@ import java.math.BigDecimal;
     @author DiachenkoDanylo
 */
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class ExpensePayload {
+
+    private int category;
 
     private BigDecimal amount;
 
     private String description;
+
+    public ExpensePayload(int category, BigDecimal amount, String description){
+        this.amount=amount;
+        this.description=description;
+        this.category=category;
+    }
 }

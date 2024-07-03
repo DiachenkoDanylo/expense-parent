@@ -2,28 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" href="/styles/css/style.css">
+    <title>Add new expense</title>
 </head>
 <body>
+<footer>
+    <nav>
+        <ul>
+            <li><a href="/category/">Category</a></li>
+            <li><a href="/expense/">Expenses</a></li>
+            <li><a href="/profile/">Profile</a></li>
+            <li th:if="!authenticated"><a href="/login">Login</a></li>
+            <li th:if="authenticated"><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</footer>
 
-<span>Create new expense</span>
-<form th:method="POST" th:action="@{/expense/}" th:object="${expense}">
-    <label for="name/">Enter description:</label>
-    <input type="text" th:field="*{description}" id="name/">
+<div class="layout">
+    <h2>Add new expense</h2>
+    <form th:method="POST" th:action="@{/expense/}" th:object="${expense}">
+        <label for="name/">Enter description:</label>
+        <input type="text" th:field="*{description}" id="name/">
 
-    <label for="description/">Enter amount:</label>
-    <input type="text" th:field="*{amount}" id="description/">
-    <div  style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">description error</div>
+        <label for="description/">Enter amount:</label>
+        <input type="text" th:field="*{amount}" id="description/">
+        <div  style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">description error</div>
 
-    <select class="form-control" id="dropDownList">
-        <option value="0">select category</option>
-        <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.getName()}"></option>
-<!--        <div  style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>-->
-    </select>
-    <br/>
-    <input type="submit" value="Update"/>
+        <label for="dropDownList">Category:</label>
+        <select class="form-control" id="dropDownList" name="category">
+            <option value=0>Select Category</option>
+            <option th:each="cat : ${categories}" th:value="${cat.getId()}" th:text="${cat.name}"></option>
+        </select>
 
-</form>
-
+        <br/>
+        <input type="submit" value="Add"/>
+    </form>
+</div>
 </body>
 </html>

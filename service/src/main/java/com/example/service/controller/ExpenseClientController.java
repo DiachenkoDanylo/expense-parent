@@ -2,9 +2,11 @@ package com.example.service.controller;
 
 import com.example.service.dto.ClientUserDTO;
 import com.example.service.dto.ExpenseDTO;
+import com.example.service.dto.ExpensePayloadCategory;
 import com.example.service.entity.ClientUser;
 import com.example.service.entity.Expense;
 import com.example.service.exception.DuplicateException;
+import com.example.service.exception.NotAllowedActionException;
 import com.example.service.service.ClientUserServiceImpl;
 import com.example.service.service.ExpenseService;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 /*  expense-parent
     29.05.2024
@@ -36,32 +39,23 @@ public class ExpenseClientController {
     private final ExpenseService expenseService;
     private final WebApplicationContext webApplicationContext;
 
-
     @GetMapping("")
     public Expense getExpenseById(@RequestParam ("id") int expId) {
         return expenseService.getExpenseById(expId);
     }
 
-    @ResponseBody
-    @PatchMapping("")
-    public ResponseEntity<ExpenseDTO> updateExpense(@RequestParam ("id") int expId,
-                                                    @RequestBody ExpenseDTO expenseDTO) {
-        ExpenseDTO updated = expenseService.update(expId,expenseDTO);
-        return new ResponseEntity<>(updated, HttpStatus.OK);
-    }
-
     @GetMapping("/{username}")
     public List<ExpenseDTO> getAllByClient(@PathVariable ("username") String username) {
-        System.out.println("SELECTED \n @AUTHENTICATION PRINCIPAL \n \n \n ");
         return expenseService.getAllExpensesDTOByClient(username);
     }
-//    @GetMapping("/{username}")
-//    public List<ExpenseDTO> getAllByClient(@PathVariable ("username") String username, @AuthenticationPrincipal OAuth2User oAuth2User) {
-//        System.out.println("SELECTED \n @AUTHENTICATION PRINCIPAL \n \n \n "+ oAuth2User.getAttributes().toString());
-//        return expenseService.getAllExpensesDTOByClient(username);
-//    }
 
-    @GetMapping("/{username}/{categoryId}")
+    @GetMapping("/{username}/")
+    public Expense getExpenseByUsernameAndId(@RequestParam ("id") int expId,
+                                             @PathVariable("username") String username) {
+            return expenseService.getExpenseByUsernameAndId(expId,username);
+    }
+
+    @GetMapping("/{username}/category/{categoryId}")
     public List<ExpenseDTO> getAllByClientAndCategory(@PathVariable ("username") String username,
                                                       @PathVariable ("categoryId") int catId) {
         return expenseService.getAllExpensesDTOByClientCategory(username, catId);
@@ -69,11 +63,28 @@ public class ExpenseClientController {
 
     @ResponseBody
     @PostMapping("/{username}")
-    public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpenseDTO expenseDTO,
-//                                                    @AuthenticationPrincipal OAuth2User oAuth2User
+    public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpensePayloadCategory expenseDTO,
                                                  @PathVariable ("username") String username) {
-        ExpenseDTO expenseDTO1 = expenseService.saveNewExpenseByClient(username,expenseDTO);
+        ExpenseDTO expenseDTO1 = expenseService.saveNewExpenseByClientCategory(username,expenseDTO);
         return new ResponseEntity<>(expenseDTO1, HttpStatus.CREATED);
+    }
+
+    @ResponseBody
+    @PatchMapping("/{username}")
+    public ResponseEntity<ExpenseDTO> updateExpense(@RequestParam ("id") int expId,
+                                                    @RequestBody ExpenseDTO expenseDTO,
+                                                    @PathVariable ("username") String username) {
+        ExpenseDTO updated = expenseService.update(expId,expenseDTO,username);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @DeleteMapping("/{username}")
+    public ResponseEntity<String> deleteExpense(@RequestParam ("id") int expId,
+                                                    @PathVariable ("username") String username) {
+        expenseService.deleteExpenseByUsernameAndId(username,expId);
+        System.out.println("\n \n"+username+"\n \n"+expId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

@@ -1,17 +1,18 @@
 package com.example.service.dto;
 /*  expense-parent
-    29.05.2024
+    25.06.2024
     @author DiachenkoDanylo
 */
 
 import com.example.service.entity.Category;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Date;
+
 @Data
-public class ExpenseDTO {
+@NoArgsConstructor
+public class ExpensePayloadCategory {
 
     private int id;
 
@@ -21,16 +22,11 @@ public class ExpenseDTO {
 
     private String description;
 
-    private LocalDateTime expenseDate;
 
-    public ExpenseDTO() {
-        super();
-    }
-
-    public ExpenseDTO(int id, BigDecimal amount, String description, Category categoryById) {
+    public ExpensePayloadCategory(int id,Category category, BigDecimal amount, String description){
         this.id=id;
         this.amount=amount;
-        this.category=categoryById;
         this.description=description;
+        this.category=category;
     }
 }

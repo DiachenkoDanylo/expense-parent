@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "t_custom_category")
+@Table(name = "t_category")
 public class Category {
 
     @Id
@@ -28,12 +28,11 @@ public class Category {
     @JoinColumn(name = "c_user_id", nullable = false)
     private ClientUser clientUser;
 
-    @Column(nullable = false, unique = true,name = "c_name")
+    @Column(nullable = false, name = "c_name")
     @Size(min = 3,max = 30,message = "Category name must be between 3 and 30 characters")
     private String name;
 
     @Column(nullable = false,name = "c_description")
     @Size(min = 10,max = 200,message = "Category description  name must be between 10 and 200 characters")
     private String description;
-
 }

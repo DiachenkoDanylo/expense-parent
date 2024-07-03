@@ -59,7 +59,7 @@ class ExpenseServiceTest {
     @Test
     @DisplayName("testing get expensebyId")
     void getExpenseById() {
-        Expense expected  = new Expense(2,new ClientUser(2,"user2",LocalDateTime.of(1010,10,10,10,10)),new Category(2,"category2","category2 description"), new BigDecimal( 250),"expense2 desc", LocalDateTime.of(1010,10,10,10,10));
+        Expense expected  = new Expense(2,new ClientUser(2,"user2",LocalDateTime.of(1010,10,10,10,10)),new Category(2, new ClientUser(),"category2","category2 description"), new BigDecimal( 250),"expense2 desc", LocalDateTime.of(1010,10,10,10,10));
         Mockito.when(repository.findById(2)).thenReturn(setUpdb().stream().filter(expense -> expense.getId() == 2).toList().stream().findFirst());
         Assertions.assertEquals(expected,repository.findById(2).get());
     }
@@ -67,11 +67,12 @@ class ExpenseServiceTest {
 
 
     private List<Expense> setUpdb() {
-        Expense expense1  = new Expense(1,new ClientUser(1,"user1",LocalDateTime.now().minusDays(5)),new Category(1,"category1","category1 description"), new BigDecimal( 150),"expense1 desc", LocalDateTime.now().minusHours(5));
-        Expense expense2  = new Expense(2,new ClientUser(2,"user2",LocalDateTime.of(1010,10,10,10,10)),new Category(2,"category2","category2 description"), new BigDecimal( 250),"expense2 desc",LocalDateTime.of(1010,10,10,10,10));
-        Expense expense3  = new Expense(3,expense2.getClientUser(),expense1.getCategory(), new BigDecimal( 1111),"desc3", LocalDateTime.now().minusHours(3));
-        Expense expense4  = new Expense(4,expense1.getClientUser(),new Category(3,"category3","category3 desc"), new BigDecimal("888.23"),"desc4", LocalDateTime.now().minusHours(2));
-        Expense expense5  = new Expense(5,new ClientUser(3,"user3",LocalDateTime.now().minusDays(2)), expense1.getCategory(), new BigDecimal( 1422),"desc5", LocalDateTime.now().minusHours(1));
-        return List.of(expense1,expense2,expense3,expense4,expense5);
+//        Expense expense1  = new Expense(1,new ClientUser(1,"user1",LocalDateTime.now().minusDays(5)),new Category(1,"category1","category1 description"), new BigDecimal( 150),"expense1 desc", LocalDateTime.now().minusHours(5));
+//        Expense expense2  = new Expense(2,new ClientUser(2,"user2",LocalDateTime.of(1010,10,10,10,10)),new Category(2,"category2","category2 description"), new BigDecimal( 250),"expense2 desc",LocalDateTime.of(1010,10,10,10,10));
+//        Expense expense3  = new Expense(3,expense2.getClientUser(),expense1.getCategory(), new BigDecimal( 1111),"desc3", LocalDateTime.now().minusHours(3));
+//        Expense expense4  = new Expense(4,expense1.getClientUser(),new Category(3,expense1.getClientUser(),"category3","category3 desc"), new BigDecimal("888.23"),"desc4", LocalDateTime.now().minusHours(2));
+//        Expense expense5  = new Expense(5,new ClientUser(3,"user3",LocalDateTime.now().minusDays(2)), expense1.getCategory(), new BigDecimal( 1422),"desc5", LocalDateTime.now().minusHours(1));
+//        return List.of(expense1,expense2,expense3,expense4,expense5);
+        return null;
     }
 }
