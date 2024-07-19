@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/styles/css/style.css">
+    <title>Charts</title>
+</head>
+<body>
+
+<footer>
+    <nav>
+        <ul>
+            <li><a href="/category/">Category</a></li>
+            <li><a href="/expense/">Expenses</a></li>
+            <li><a href="/profile/">Profile</a></li>
+            <li th:if="!authenticated"><a href="/login">Login</a></li>
+            <li th:if="authenticated"><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</footer>
+<h2>Available Chart</h2>
+<div class="layout">
+
+    <div class="chart-card">
+        <a href="linear">Linear Diagram</a>
+        <img src="/images/linear_diagramm.png">
+    </div>
+    <div class="chart-card">
+        <a href="circle">Circle Diagram</a>
+        <img src="/images/circle_diagramm.png">
+    </div>
+    <div class="chart-card">
+        <a href="column">Column Diagram</a>
+        <img src="/images/stolb_diagramm.png">
+    </div>
+</div>
+
+
+
+<div class="fab-container">
+    <div class="fab-button" id="fabButton">
+        +
+    </div>
+    <div class="fab-options" id="fabOptions">
+        <a href="/expense/new">Add Expense</a>
+        <a href="/category/new">Add Category</a>
+    </div>
+</div>
+
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
