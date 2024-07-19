@@ -50,7 +50,6 @@ public class CategoryService {
                                 .getAccessToken().getTokenValue();
                         request.getHeaders().setBearerAuth(token);
                     }
-
                     return execution.execute(request, body);
                 })
                 .build();
@@ -91,7 +90,6 @@ public class CategoryService {
                         "/category/{username}",
                         oAuth2User.getAttributes().get("email").toString())
                 .body(categoryDTO1).retrieve();
-        System.out.println(categoryDTO.toString()+"\n \n \n \n ");
     }
 
     public void updateCategory(OAuth2User oAuth2User,
@@ -100,7 +98,6 @@ public class CategoryService {
                 id,
                 categoryDTO.getName(),
                 categoryDTO.getDescription());
-        System.out.println("inside updateCategory \n \n \n "+categoryDTO1.toString()+ "\n \n \n ");
         restClient.patch().uri(
                         "/category/{username}",
                         oAuth2User.getAttributes().get("email").toString())

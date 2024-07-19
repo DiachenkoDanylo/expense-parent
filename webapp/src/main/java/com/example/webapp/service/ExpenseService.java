@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -123,7 +124,6 @@ public class ExpenseService {
                         return response.bodyTo(ExpenseDTO.class);
                     }
                 });
-
     };
 
     public List<ExpenseDTO> getExpensesByUsernameAndCategory(int id,OAuth2User oAuth2User) {
@@ -141,8 +141,6 @@ public class ExpenseService {
 
     };
 
-
-
     public void addExpense(OAuth2User oAuth2User,
                            ExpensePayload expensePayload) {
         ExpenseDTO expenseDTO;
@@ -157,7 +155,6 @@ public class ExpenseService {
                     expensePayload.getDescription(),
                     categoryService.getCategoryById(oAuth2User,expensePayload.getCategory()));
         }
-
         restClient.post().uri(
                         "/expense/{username}",
                         oAuth2User.getAttributes().get("email").toString())
@@ -201,4 +198,5 @@ public class ExpenseService {
                         oAuth2User.getAttributes().get("email").toString(),id)
                 .retrieve();
     }
+
 }

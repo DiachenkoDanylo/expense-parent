@@ -38,11 +38,8 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public String showCategoryPage(@PathVariable ("id") int id, Model model, @AuthenticationPrincipal OAuth2User oAuth2User) {
-//        clientUserService.getUsername(oAuth2User.getAttributes().get("email").toString()).stream();
-
         model.addAttribute("category", categoryService.getCategoryById(oAuth2User, id));
         model.addAttribute("expenseList",expenseService.getExpensesByUsernameAndCategory(id,oAuth2User));
-        //model.addAttribute("ExpenseList", expenseService.getAllByCategoryAndUser(oAuth2User.getAttributes().get("email").toString(),id));
        return "category/showCategory";
     }
 
@@ -79,7 +76,6 @@ public class CategoryController {
             bindingResult.getFieldErrors().forEach(error -> System.out.println(error.toString()));
             return null;
         }
-        System.out.println("\n \n \n"+category.toString()+"\n \n \n ");
         categoryService.updateCategory(oAuth2User,category,id);
         return "redirect:/category/";
     }
@@ -94,13 +90,9 @@ public class CategoryController {
     public String deleteCategory(Model model, @AuthenticationPrincipal OAuth2User oAuth2User,
                                 @RequestParam(value = "cascade", required = false) Boolean cascade,
                                 @RequestParam("id") Integer id) {
-        System.out.println(cascade);
-        System.out.println("Id of deleting card is "+id);
         categoryService.deleteCategory(oAuth2User,id,cascade);
-
-        //model.addAttribute("categories",dtoList);
         return "redirect:/category/";
-//                "expense/newExpenseForm";
+
     }
 
 }

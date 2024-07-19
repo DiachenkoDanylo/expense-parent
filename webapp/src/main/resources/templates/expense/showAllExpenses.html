@@ -46,7 +46,7 @@
     </div>
 
     <div class="pagination" style="align-self: center;">
-        <a th:href="@{/expense/(size=${size}, page=${page - 1})}" th:if="${page > 0}">&laquo; Previous</a>
+        <a th:href="@{/expense/(size=${size}, page=${page - 1})}" th:if="${page > 1}">&laquo; Previous</a>
         <span th:each="i : ${#numbers.sequence(1, totalPages+1)}">
             <a th:href="@{/expense/(size=${size}, page=${i})}" th:text="${i }" th:classappend="${i == page} ? 'active' : ''"></a>
         </span>
