@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="/styles/css/style.css">
+</head>
+<body>
+<footer>
+    <nav>
+        <ul>
+            <li><a href="/users/">Users</a></li>
+            <li><a href="/logs/">Logs</a></li>
+            <!--            <li><a href="/profile/">Profile</a></li>-->
+            <li th:if="!authenticated"><a href="/login">Login</a></li>
+            <li th:if="authenticated"><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</footer>
+<main>
+    <section class="intro">
+        <h1>Welcome  to Expense Tracker Manager Panel</h1>
+        <h2 th:text="${user.toString()}">value</h2>
+        <h3>Track Your Expenses Easily</h3>
+    </section>
+</main>
+</body>
+</html>

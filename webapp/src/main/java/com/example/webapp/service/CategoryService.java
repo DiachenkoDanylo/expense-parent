@@ -6,8 +6,6 @@ package com.example.webapp.service;
 
 import com.example.webapp.model.CategoryDTO;
 import com.example.webapp.exception.CustomException;
-import com.example.webapp.model.ExpenseDTO;
-import com.example.webapp.model.ExpensePayload;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -69,16 +67,20 @@ public class CategoryService {
     }
 
     public CategoryDTO getCategoryById(OAuth2User oAuth2User, int id) {
-        return restClient.get()
-                .uri("/category/{email}/{id}",oAuth2User.getAttributes().get("email"),id)
-                .accept(APPLICATION_JSON)
-                .exchange((request, response) -> {
-                    if (response.getStatusCode().is4xxClientError()) {
-                        throw new CustomException(response.bodyTo(CustomException.class));
-                    } else {
-                        return response.bodyTo(CategoryDTO.class);
-                    }
-                });
+        if(id== -1){
+            return new CategoryDTO("Unassigned","Unassigned expenses");
+        }else {
+            return restClient.get()
+                    .uri("/category/{email}/{id}",oAuth2User.getAttributes().get("email"),id)
+                    .accept(APPLICATION_JSON)
+                    .exchange((request, response) -> {
+                        if (response.getStatusCode().is4xxClientError()) {
+                            throw new CustomException(response.bodyTo(CustomException.class));
+                        } else {
+                            return response.bodyTo(CategoryDTO.class);
+                        }
+                    });
+        }
     }
 
     public void addNewCategory(OAuth2User oAuth2User,

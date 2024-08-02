@@ -5,6 +5,7 @@ package com.example.service.service;
 */
 
 import com.example.service.dto.ClientUserDTO;
+import com.example.service.dto.manager.UsersDTO;
 import com.example.service.entity.ClientUser;
 import com.example.service.exception.DuplicateException;
 import com.example.service.exception.NotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -24,12 +26,23 @@ public class ClientUserServiceImpl implements  ClientUserService{
     private final ClientUserRepository clientUserRepository;
     private final ModelMapper modelMapper;
 
+    public List<UsersDTO> getAllUsers() {
+        List<ClientUser> list = clientUserRepository.findAll();
+        return list.stream().map(p -> new UsersDTO(p.getId(), p.getUsername(), p.getCreatedAt()))
+                .collect(Collectors.toList());
+    }
+
     public List<ClientUserDTO> getAllClientsDTO(){
         List<ClientUserDTO> clientUserDTOList = new ArrayList<>();
         for(ClientUser clientUser :clientUserRepository.findAll()) {
             clientUserDTOList.add( convertToClientUserDTO(clientUser));
         }
         return clientUserDTOList;
+    }
+
+    public UsersDTO getUserDTOById(int id){
+        return clientUserRepository.findById(id).stream().map(p -> new UsersDTO(p.getId(), p.getUsername(), p.getCreatedAt()))
+                .findFirst().get();
     }
 
     @Override
@@ -76,5 +89,10 @@ public class ClientUserServiceImpl implements  ClientUserService{
         }catch (NotFoundException e){
             throw new NotFoundException("User with username  " + username + " are NOT exists in our service");
         }
+    }
+
+    public String getUsernameUserById(Integer id){
+        return clientUserRepository.findById(id).get().getUsername();
+
     }
 }

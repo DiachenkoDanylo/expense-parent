@@ -27,7 +27,7 @@ public class ExpenseController {
 
     @GetMapping("/")
     public String showExpenses(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                              @RequestParam(value = "expenses_per_page", defaultValue = "10", required = false) Integer expensesPerPage,
+                              @RequestParam(value = "size", defaultValue = "10", required = false) Integer expensesPerPage,
                               Model model, @AuthenticationPrincipal OAuth2User oAuth2User) {
         if (page == null || expensesPerPage == null) {
             model.addAttribute("expenseList", expenseService.getExpensesByUsername(oAuth2User.getAttributes().get("email").toString()));
@@ -79,8 +79,8 @@ public class ExpenseController {
 
     @GetMapping("/{id}")
     public String showExpense(Model model,@PathVariable(name = "id")int id, @AuthenticationPrincipal OAuth2User oAuth2User) {
-//        model.addAttribute("expense",expenseService.)
-        return null;
+        model.addAttribute("expense",expenseService.getExpenseByUsernameAndId(id,oAuth2User));
+        return "expense/showExpense";
     }
 
     @GetMapping("/new")

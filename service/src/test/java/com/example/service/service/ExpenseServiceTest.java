@@ -40,7 +40,7 @@ class ExpenseServiceTest {
         List<Expense> expenses = setUpdb();
         List<Expense> expenseForOneClient = expenses.stream().filter(expense -> expense.getClientUser().getId() == 1).toList();
        // System.out.println(expenseForOneClient);
-        Mockito.when(repository.findExpensesByClientUserId(1)).thenReturn(expenseForOneClient);
+        Mockito.when(repository.findExpensesByClientUserIdOrderByExpenseDateDesc(1)).thenReturn(expenseForOneClient);
         List<Expense> result = expenseService.getAllExpensesByClient("Oleg_Skripka");
         Assertions.assertEquals(expenseForOneClient,result);
     }
@@ -51,7 +51,7 @@ class ExpenseServiceTest {
     public void getAllExpensesByClient_null_empty() {
         List<Expense> expenses = setUpdb();
         List<Expense> expenseForOneClient = expenses.stream().filter(expense -> Objects.equals(expense.getClientUser().getUsername(), "Oleg_Skripka")).toList();
-        Mockito.when(repository.findExpensesByClientUserUsername("Oleg_Skripka")).thenReturn(expenseForOneClient);
+        Mockito.when(repository.findExpensesByClientUserUsernameOrderByExpenseDateDesc("Oleg_Skripka")).thenReturn(expenseForOneClient);
         List<Expense> result = expenseService.getAllExpensesByClient("Oleg_Skripka");
         Assertions.assertEquals(new ArrayList<>(),result);
     }

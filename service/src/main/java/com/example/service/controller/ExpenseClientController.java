@@ -1,29 +1,18 @@
 package com.example.service.controller;
 
-import com.example.service.dto.ClientUserDTO;
 import com.example.service.dto.ExpenseDTO;
 import com.example.service.dto.ExpensePayloadCategory;
-import com.example.service.entity.ClientUser;
 import com.example.service.entity.Expense;
-import com.example.service.exception.DuplicateException;
-import com.example.service.exception.NotAllowedActionException;
 import com.example.service.service.ClientUserServiceImpl;
 import com.example.service.service.ExpenseService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 /*  expense-parent
     29.05.2024
@@ -57,7 +46,7 @@ public class ExpenseClientController {
 
     @GetMapping("/{username}/category/{categoryId}")
     public List<ExpenseDTO> getAllByClientAndCategory(@PathVariable ("username") String username,
-                                                      @PathVariable ("categoryId") int catId) {
+                                                      @PathVariable ("categoryId") Integer catId) {
         return expenseService.getAllExpensesDTOByClientCategory(username, catId);
     }
 

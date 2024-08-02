@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/styles/css/style.css">
+    <title>User Logs</title>
+</head>
+<body style="background: #e5e7eb">
+<footer>
+    <nav>
+        <ul>
+            <li><a href="/users/">Users</a></li>
+            <li><a href="/logs/">Logs</a></li>
+<!--            <li><a href="/profile/">Profile</a></li>-->
+            <li th:if="!authenticated"><a href="/login">Login</a></li>
+            <li th:if="authenticated"><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</footer>
+<div class="layout">
+
+    <div th:each="log : ${logsList}" >
+        <div th:if="${log.toString().contains('SAVE')}">
+            <p th:text="${log.toString()}" style="color: green">Value</p>
+        </div>
+        <div th:if="${log.toString().contains('DELETE')}">
+            <p th:text="${log.toString()}" style="color: red">Value</p>
+        </div>
+        <div th:if="${log.toString().contains('UPDATE')}">
+            <p th:text="${log.toString()}" style="color: orange">Value</p>
+        </div>
+        <hr>
+    </div>
+</div>
+<div class="pagination" style="align-self: center;">
+    <a th:href="@{/logs/all/ (size=${size}, page=${page - 1})}" th:if="${page > 1}">&laquo; Previous</a>
+    <span th:each="i : ${#numbers.sequence(1, totalPages+1)}">
+            <a th:href="@{/logs/all/ ( size=${size}, page=${i})}" th:text="${i }" th:classappend="${i == page} ? 'active' : ''"></a>
+        </span>
+    <a th:href="@{/logs/all/ (size=${size}, page=${page + 1})}" th:if="${page <= totalPages}">Next &raquo;</a>
+</div>
+
+</body>
+</html>

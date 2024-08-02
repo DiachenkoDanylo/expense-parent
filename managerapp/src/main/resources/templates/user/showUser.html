@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/styles/css/style.css">
+    <title>User categories</title>
+</head>
+<body>
+
+<footer>
+    <nav>
+        <ul>
+            <li><a href="/users/">Users</a></li>
+            <li><a href="/logs/">Logs</a></li>
+            <!--            <li><a href="/profile/">Profile</a></li>-->
+            <li th:if="!authenticated"><a href="/login">Login</a></li>
+            <li th:if="authenticated"><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</footer>
+<div class="layout">
+    <div th:if="${!categoryList.isEmpty()}" th:each="category : ${categoryList}" class="expense-card">
+        <div class="expense-card-layout">
+            <form th:action="@{/expense/edit}" method="get">
+                <input type="hidden" name="id" th:value="${category.getId()}">
+                <button class="button2" type="submit" >
+                    <img class="icon-md" src="/images/ruler-cross-pen-svgrepo-com.svg" >
+                </button>
+            </form>
+            <form th:action="@{/expense/delete}" method="post" >
+                <input type="hidden" name="id" th:value="${category.getId()}">
+                <button class="button1" type="submit" >
+                    <img class="icon-md" src="/images/close-square-svgrepo-com.svg" >
+                </button>
+            </form>
+        </div>
+        <div class="expense-description">
+            <p th:text="${category.getId()}">Value</p>
+            <a th:href="@{/users/{userId}/{catId}(userId=${userId},catId=${category.getId()})}" th:text="${category.getName()}">Value</a>
+            <p th:text="${category.getDescription()}">Value</p>
+        </div>
+    </div>
+</div>
+<div class="fab-container">
+    <div class="fab-button" id="fabButton">
+        +
+    </div>
+    <div class="fab-options" id="fabOptions">
+        <a href="/expense/new">Add Expense</a>
+        <a href="/category/new">Add Category</a>
+    </div>
+</div>
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
