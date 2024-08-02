@@ -5,7 +5,6 @@ package com.example.service.service;
 */
 
 import com.example.service.dto.ClientUserDTO;
-import com.example.service.dto.manager.UserCategoryExpenseDTO;
 import com.example.service.dto.manager.UsersDTO;
 import com.example.service.entity.ClientUser;
 import com.example.service.exception.DuplicateException;

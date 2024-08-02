@@ -4,13 +4,7 @@ package com.example.service.dto.manager;
     @author DiachenkoDanylo
 */
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.apache.catalina.User;
 
 import java.time.LocalDateTime;
 
