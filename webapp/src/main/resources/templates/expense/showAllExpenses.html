@@ -38,9 +38,9 @@
                 </form>
             </div>
             <div class="expense-description">
-                <p th:text="${expense.getAmount()}">Value</p>
+                <a th:action="@{/expense/edit}" th:text="${expense.getAmount()}">Value</a>
                 <p th:text="${expense.getDescription()}">Value</p>
-                <p th:text="${expense.getExpenseDate().toLocalTime()}">Value</p>
+                <p th:text="${expense.getExpenseDate().toLocalDate()}">Value</p>
             </div>
         </div>
     </div>

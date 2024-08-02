@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -22,9 +23,12 @@ public class ExpensePayloadCategory {
 
     private String description;
 
+    private LocalDateTime expenseDate;
 
-    public ExpensePayloadCategory(int id,Category category, BigDecimal amount, String description){
+
+    public ExpensePayloadCategory(LocalDateTime expenseDate,int id,Category category, BigDecimal amount, String description){
         this.id=id;
+        this.expenseDate = expenseDate;
         this.amount=amount;
         this.description=description;
         this.category=category;

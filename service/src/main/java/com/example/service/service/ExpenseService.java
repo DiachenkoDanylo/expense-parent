@@ -1,23 +1,20 @@
 package com.example.service.service;
 
-import com.example.service.dto.ClientUserDTO;
 import com.example.service.dto.ExpenseDTO;
 import com.example.service.dto.ExpensePayloadCategory;
 import com.example.service.entity.ClientUser;
 import com.example.service.entity.Expense;
-import com.example.service.exception.DuplicateException;
 import com.example.service.exception.NotAllowedActionException;
 import com.example.service.exception.NotFoundException;
 import com.example.service.repository.ExpenseRepository;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Not;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /*  expense-parent
     29.05.2024
@@ -32,27 +29,37 @@ public class ExpenseService {
     private final ModelMapper modelMapper;
     private final CategoryService categoryService;
 
+
+
+
     public List<ExpenseDTO> getAllExpensesDTOByClient(String username){
         List<ExpenseDTO> expenseDTOS = new ArrayList<>();
         try {
             clientUserService.getUserByUsername(username);
-            for(Expense expense : expenseRepository.findExpensesByClientUserUsername(username)) {
+            for(Expense expense : expenseRepository.findExpensesByClientUserUsernameOrderByExpenseDateDesc(username)) {
                 expenseDTOS.add(convertToExpenseDTO(expense));
             }
-            return expenseDTOS;
+    return expenseDTOS;
         }catch (NotFoundException e) {
             throw new NotFoundException("Username " + username + " are NOT exists in our service");
         }
     }
 
     public List<Expense> getAllExpensesByClient(String username){
-        return expenseRepository.findExpensesByClientUserUsername(username);
+        return expenseRepository.findExpensesByClientUserUsernameOrderByExpenseDateDesc(username);
     }
 
-    public List<ExpenseDTO> getAllExpensesDTOByClientCategory(String username, int catId){
+    public List<ExpenseDTO> getAllExpensesDTOByClientCategory(String username, Integer catId){
         List<ExpenseDTO> expenseDTOS = new ArrayList<>();
-        for(Expense expense : expenseRepository.findExpensesByClientUserUsernameAndCategory_Id(username, catId)) {
-            expenseDTOS.add(convertToExpenseDTO(expense));
+        if(catId == -1) {
+            for(Expense expense :expenseRepository.findExpensesByClientUserIdAndCategoryIsNullOrderByExpenseDateDesc(clientUserService.getUserByUsername(username).getId())) {
+                expenseDTOS.add(convertToExpenseDTO(expense));
+                System.out.println(expense.toString());
+            }
+        } else {
+            for(Expense expense : expenseRepository.findExpensesByClientUserUsernameAndCategory_IdOrderByExpenseDateDesc(username, catId)) {
+                expenseDTOS.add(convertToExpenseDTO(expense));
+            }
         }
         return expenseDTOS;
     }
@@ -104,11 +111,11 @@ public class ExpenseService {
 
     public ExpenseDTO update(int expId, ExpenseDTO expenseDTO,String username) {
         Expense exp = getExpenseByUsernameAndId(expId,username);
-        exp.setExpenseDate(expenseDTO.getExpenseDate());
+//        exp.setExpenseDate(expenseDTO.getExpenseDate());
         exp.setAmount(expenseDTO.getAmount());
         exp.setDescription(expenseDTO.getDescription());
         exp.setCategory(expenseDTO.getCategory());
-        exp.setExpenseDate(LocalDateTime.now());
+//        exp.setExpenseDate(LocalDateTime.now());
         return convertToExpenseDTO(expenseRepository.save(exp));
 
     }
@@ -147,13 +154,7 @@ public class ExpenseService {
             ClientUser clientUser = clientUserService.getUserByUsername(username);
             Expense expense = convertToExpenseWithCategory(expenseDTO);
             expense.setClientUser(clientUser);
-            if(expense.getCategory()==null) {
-                expenseRepository.saveExpenseByCategory(clientUserService.getUserByUsername(username).getId(),expense.getDescription(),null,expense.getAmount());
-            }else {
-                expenseRepository.saveExpenseByCategory(clientUserService.getUserByUsername(username).getId(),expense.getDescription(),expense.getCategory().getId(),expense.getAmount());
-            }
-            System.out.println(expense.toString());
-            //expenseRepository.saveExpenseByCategory(clientUserService.getUserByUsername(username).getId(),expense.getDescription(),expense.getCategory().getId(),expense.getAmount());
+            expenseRepository.save(expense);
             return convertToExpenseDTO(convertToExpenseWithCategory(expenseDTO));
         } catch (NotFoundException e) {
             throw new NotFoundException("User with username '" + username + "' are not exists in our service");
@@ -161,15 +162,17 @@ public class ExpenseService {
     }
 
     public void deleteExpenseByUsernameAndId(String username, int expId) {
-        if(getExpenseById(expId).getClientUser().getUsername().equals(username)) {
-            expenseRepository.deleteById(expId);
+        ClientUser userId = clientUserService.getUserByUsername(username);
+        if(userId.getUsername().equals(username)) {
+            expenseRepository.delete(getExpenseById(expId));
+//            expenseRepository.deleteExpenseByIdAndClientUser_Id(expId,userId.getId());
         } else {
             throw new NotAllowedActionException("User with username "+username+" not allowed to do that");
         }
     }
 
     public void updateAfterDeletingCategory(String username, int catId, boolean include) {
-        List<Expense> expenses = expenseRepository.findExpensesByClientUserUsernameAndCategory_Id(username,catId);
+        List<Expense> expenses = expenseRepository.findExpensesByClientUserUsernameAndCategory_IdOrderByExpenseDateDesc(username,catId);
         if (include) {
             expenseRepository.deleteAll(expenses);
         }else{

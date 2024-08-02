@@ -1,14 +1,13 @@
 package com.example.service.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /*  expense-parent
     28.05.2024

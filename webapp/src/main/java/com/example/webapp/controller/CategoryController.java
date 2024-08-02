@@ -2,10 +2,7 @@ package com.example.webapp.controller;
 
 import com.example.webapp.exception.CustomException;
 import com.example.webapp.model.CategoryDTO;
-import com.example.webapp.model.ExpenseDTO;
-import com.example.webapp.model.ExpensePayload;
 import com.example.webapp.service.CategoryService;
-import com.example.webapp.service.ClientUserService;
 import com.example.webapp.service.ExpenseService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*  expense-parent
     14.06.2024
@@ -25,13 +25,14 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final ClientUserService clientUserService;
     private final ExpenseService expenseService;
 
     @GetMapping("/")
     public String showAllCategoryPage(Model model, @AuthenticationPrincipal OAuth2User oAuth2User) {
-
-        model.addAttribute("categoryList", categoryService.getCategoriesByClientUsername(oAuth2User));
+        CategoryDTO unassigned = new CategoryDTO(-1,"Unassigned","Unassigned expenses");
+        List<CategoryDTO> list = new ArrayList<>(categoryService.getCategoriesByClientUsername(oAuth2User));
+        list.add(unassigned);
+        model.addAttribute("categoryList", list);
         categoryService.getCategoriesByClientUsername(oAuth2User).stream().forEach(categoryDTO -> System.out.println(categoryDTO.toString()));
         return "category/showAllCategories";
     }

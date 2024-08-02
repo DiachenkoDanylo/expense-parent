@@ -4,7 +4,7 @@ package com.example.webapp.model;
     @author DiachenkoDanylo
 */
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +13,11 @@ import lombok.NoArgsConstructor;
 public class CategoryDTO {
 
         private Integer id;
+
+        @Size(min = 3,max = 30,message = "Category name must be between 3 and 30 characters")
         private String name;
+
+        @Size(min = 10,max = 200,message = "Category desc must be between 10 and 200 characters")
         private String description;
 
         public CategoryDTO(Integer id ,String name, String description) {

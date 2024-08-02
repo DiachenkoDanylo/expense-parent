@@ -3,7 +3,6 @@ package com.example.webapp.service;
 import com.example.webapp.model.ClientUserDTO;
 import com.example.webapp.model.ExpenseDTO;
 import com.example.webapp.exception.CustomException;
-import com.example.webapp.model.ExpensePayload;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -11,13 +10,11 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 

@@ -8,7 +8,6 @@ import com.example.webapp.exception.CustomException;
 import com.example.webapp.model.ClientUserDTO;
 import com.example.webapp.model.ExpenseDTO;
 import com.example.webapp.model.ExpensePayload;
-import lombok.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -20,7 +19,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -82,7 +80,6 @@ public class ExpenseService {
         if(k>res.size())
             return res.subList(k-expensePerPage,res.size());
         return res.subList(k-expensePerPage,k);
-
     }
 
     public int getPages(int expensePerPage, String email) {
