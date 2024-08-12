@@ -389,3 +389,9 @@ main {
     color: black;
     cursor: pointer;
 }
+
+.simple_button{
+    width: 60px;
+    height: 25px;
+    cursor: pointer;
+}

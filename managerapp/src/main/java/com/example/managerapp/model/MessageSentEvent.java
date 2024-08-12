@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,4 +16,5 @@ public class MessageSentEvent {
     private String sendFrom;
     private String message;
     private String sendTo;
+    private String ticketId;
 }

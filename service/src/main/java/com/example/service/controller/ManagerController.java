@@ -26,12 +26,11 @@ public class ManagerController {
     private final ClientUserServiceImpl clientUserService;
     private final ExpenseService expenseService;
 
+
     @GetMapping("users")
     public List<UsersDTO> getUsers() {
-        clientUserService.getAllUsers().forEach(p -> System.out.println(p.toString()));
         return clientUserService.getAllUsers();
     }
-
 
     @GetMapping("users/{id}")
     public UsersDTO getUserById(@PathVariable("id") Integer id) {
@@ -46,7 +45,6 @@ public class ManagerController {
     @GetMapping("users/{id}/{category}")
     public List<ExpenseDTO> getExpensesByUserAndCategory(@PathVariable("id") Integer id,
                                                 @PathVariable("category") Integer category) {
-        System.out.println("user id = "+id + "  "+"category id = "+category);
         return expenseService.getAllExpensesDTOByClientCategory(clientUserService.getUserDTOById(id).getUsername(),category);
     }
 

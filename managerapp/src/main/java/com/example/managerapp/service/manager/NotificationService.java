@@ -4,21 +4,17 @@ package com.example.managerapp.service.manager;
     @author DiachenkoDanylo
 */
 
-import com.example.managerapp.controller.ChatController;
 import com.example.managerapp.model.MessageSentEvent;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class NotificationService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    @Autowired
-    public NotificationService(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
-    }
 
     public void notifyUser(String username, MessageSentEvent message) {
         messagingTemplate.convertAndSendToUser(username, "/queue/messages", message);

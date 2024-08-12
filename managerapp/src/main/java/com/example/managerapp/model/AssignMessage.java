@@ -6,6 +6,7 @@ import lombok.Data;
     07.08.2024
     @author DiachenkoDanylo
 */
+
 @Data
 public class AssignMessage {
 

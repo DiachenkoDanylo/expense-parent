@@ -1,50 +1,56 @@
 package com.example.managerapp.controller;
 /*  expense-parent
-    04.08.2024
+    01.08.2024
     @author DiachenkoDanylo
 */
 
-//import com.example.webapp.service.KafkaMessageProducer;
-//import com.example.webapp.model.Message;
-//import com.example.webapp.service.Producer;
-import com.example.managerapp.model.AssignMessage;
-import com.example.managerapp.model.HelpTicket;
-import com.example.managerapp.model.MessageSentEvent;
 import com.example.managerapp.service.manager.HelpTicketService;
-import com.example.managerapp.service.manager.KafkaMessagingService;
-import lombok.AllArgsConstructor;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/app")
-@AllArgsConstructor
+@RequestMapping("/")
 public class ChatController {
 
-    private final KafkaMessagingService kafkaMessagingService;
     private final HelpTicketService helpTicketService;
 
-
-    @MessageMapping("/sendMessage")
-    @SendTo("/topic/messages")
-    public MessageSentEvent send(MessageSentEvent messageSentEvent) {
-        System.out.println(messageSentEvent.toString()+ " SENDING MESSAGE");
-//        notificationService.notifyUser(messageSentEvent.getSendFrom(),messageSentEvent);
-        HelpTicket helpTicket = helpTicketService.getTicketByUser(messageSentEvent.getSendTo()).get();
-        helpTicketService.addMessage(helpTicket.getId(),messageSentEvent);
-        kafkaMessagingService.sendOrder(messageSentEvent);
-        return messageSentEvent;
+    public ChatController(HelpTicketService helpTicketService) {
+        this.helpTicketService = helpTicketService;
     }
 
-    @MessageMapping("/assign")
-    @SendTo("/topic/messages")
-    public AssignMessage assign(AssignMessage message) {
-        helpTicketService.assignManager(message);
-        System.out.println("assign to "+ message);
-        return message;
+    @GetMapping("")
+    public String index(Model model, @AuthenticationPrincipal OAuth2User oAuth2User){
+        model.addAttribute("user",oAuth2User.getAttributes().get("email").toString());
+        return "index";
     }
 
+    @GetMapping("chat/")
+    public String allChats(Model model, @AuthenticationPrincipal OAuth2User oAuth2User){
+        model.addAttribute("chatList", helpTicketService.getAllTickets());
+        model.addAttribute("username",oAuth2User.getAttributes().get("email").toString());
+        return "allChat";
+    }
 
+    @GetMapping("chat/{ticketId}")
+    public String chat(Model model,
+            @PathVariable(value = "ticketId") String ticketId, @AuthenticationPrincipal OAuth2User oAuth2User){
+        model.addAttribute("messageList", helpTicketService.getMessages(ticketId));
+        model.addAttribute("username",oAuth2User.getAttributes().get("email").toString());
+        model.addAttribute("sendTo",helpTicketService.getTicketByTicketId(ticketId).get().getUser());
+        model.addAttribute("ticketId",ticketId);
+        return "chatMain";
+    }
+
+    @PostMapping("chat/{ticketId}/mark")
+    public String markedAsSolvedOrUnsolved(Model model,
+                                @PathVariable(value = "ticketId") String ticketId, @AuthenticationPrincipal OAuth2User oAuth2User){
+        helpTicketService.markedAsSolvedUnsolved(helpTicketService.getTicketByTicketId(ticketId).get());
+        return "redirect:/chat/{ticketId}";
+    }
 }

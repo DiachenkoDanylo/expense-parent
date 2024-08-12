@@ -1,41 +1,30 @@
 package com.example.webapp.controller;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
 /*  expense-parent
-    02.08.2024
+    07.06.2024
     @author DiachenkoDanylo
 */
-
-//import com.example.webapp.service.KafkaMessageProducer;
-import com.example.webapp.model.MessageSentEvent;
-import com.example.webapp.model.RequestMessageList;
-import com.example.webapp.service.Producer;
-import lombok.AllArgsConstructor;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+@RequestMapping("/chat/")
 @Controller
-@RequestMapping("/app")
-@AllArgsConstructor
 public class ChatController {
 
-    private final Producer producer;
-
-    @MessageMapping("/sendMessage")
-    @SendTo("/topic/messages")
-    public MessageSentEvent send(MessageSentEvent chatmessage) {
-        System.out.println("controller");
-        producer.sendOrderEvent(chatmessage);
-        return chatmessage;
+    @GetMapping("")
+    public String indexPage(Model model, @AuthenticationPrincipal OAuth2User oAuth2User){
+        model.addAttribute("username", oAuth2User.getAttributes().get("email"));
+        return "chat";
     }
 
-//    @MessageMapping("/requestMessageList")
-//    @SendTo("/topic/requestList")
-//    public RequestMessageList requestList(RequestMessageList chatmessage) {
-//        System.out.println("get request");
-////        producer.sendListRequest(chatmessage);
-//        return chatmessage;
-//    }
-
+    @GetMapping("{id}")
+    public String showChat(@PathVariable("id") String id, Model model, @AuthenticationPrincipal OAuth2User oAuth2User){
+        model.addAttribute("ticketId",id);
+        model.addAttribute("username", oAuth2User.getAttributes().get("email").toString());
+        return "chatTest";
+    }
 
 }

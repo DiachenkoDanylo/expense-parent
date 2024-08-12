@@ -23,11 +23,11 @@ function connect() {
 function sendMessage() {
     const username = document.getElementById('username').value;
     const message = document.getElementById('messageInput').value;
+    const ticketId = document.getElementById('ticketId').value;
     const messageInput= document.getElementById('messageInput');
     const sendTo = document.getElementById('sendTo').value;
     messageInput.value='';
-    stompClient.send("/app/sendMessage", {}, JSON.stringify({'sendFrom': username, 'message': message, 'sendTo': sendTo}));
-
+    stompClient.send("/app/sendMessage", {}, JSON.stringify({'sendFrom': username, 'message': message, 'sendTo': sendTo, 'ticketId': ticketId}));
 }
 
 function showMessage(message) {
@@ -42,7 +42,7 @@ function showMessage(message) {
     } else {
         messageElement.className='chat_bubble_container incoming';
     }
-    messageElement.innerHTML = `<div class="chat_bubble">${message.sendFrom}: ${message.message}</div>`;
+    messageElement.innerHTML = `<div class="chat_bubble"> ${message.message}</div>`;
     messageDiv.appendChild(messageElement)
     messages.appendChild(messageDiv);
     const container = document.getElementById('messages');

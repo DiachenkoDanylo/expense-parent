@@ -9,6 +9,7 @@
         <ul>
             <li><a href="/users/">Users</a></li>
             <li><a href="/logs/">Logs</a></li>
+            <li><a href="/chat/">Chats</a></li>
             <!--            <li><a href="/profile/">Profile</a></li>-->
             <li th:if="!authenticated"><a href="/login">Login</a></li>
             <li th:if="authenticated"><a href="/logout">Logout</a></li>
@@ -19,16 +20,20 @@
 <div class="userHeader">
     <h2 style="width:fit-content" th:text="'Chat with  '+${sendTo}"></h2>
     <button onclick="assign()" class="btn" style="padding:unset; margin: 20px 3px 3px 6px;">assign</button>
+    <form th:action="@{/chat/{ticketId}/mark(ticketId=${ticketId})}" method="post">
+        <button type="submit" class="btn" style="width: max-content; padding: unset; margin: 20px 3px 3px 6px;">Mark as Solved/Unsolved</button>
+    </form>
+
 </div>
 <div class="chat" id="chat" >
 
     <div id="messages" class="messages">
         <div th:each="message : ${messageList}" class="message">
             <div th:if="${message.getSendFrom().equals(username)}" class="chat_bubble_container outgoing">
-                <div class="chat_bubble" th:text="${message.getSendFrom()} + ':' + ${message.getMessage()}">Value</div>
+                <div class="chat_bubble" th:text="${message.getMessage()}">Value</div>
             </div>
-            <div th:if="${message.getSendTo().equals(username)}" class="chat_bubble_container incoming">
-                <div  class="chat_bubble" th:text="${message.getSendFrom()} + ':' + ${message.getMessage()}">Value</div>
+            <div th:if="${!message.getSendFrom().equals(username)}" class="chat_bubble_container incoming">
+                <div  class="chat_bubble" th:text="${message.getMessage()}">Value</div>
             </div>
         </div>
     </div>

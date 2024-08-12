@@ -4,6 +4,7 @@ package com.example.webapp.service;
     @author DiachenkoDanylo
 */
 
+import com.example.webapp.model.HelpTicketDTO;
 import com.example.webapp.model.MessageSentEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -21,6 +22,10 @@ public class NotificationService {
 
     public void notifyUser(String username, MessageSentEvent message) {
         messagingTemplate.convertAndSendToUser(username, "/queue/messages", message);
+    }
+
+    public void notifyUserWithHelpTicket(HelpTicketDTO helpTicketDTO) {
+        messagingTemplate.convertAndSendToUser(helpTicketDTO.getUser(), "/queue/helpTicket", helpTicketDTO);
     }
 
     public void notifyAll(MessageSentEvent message) {

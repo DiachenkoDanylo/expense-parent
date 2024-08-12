@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/styles/css/style.css">
-    <title>All users</title>
+    <title>All chats</title>
 </head>
 <body>
 
@@ -13,6 +13,7 @@
         <ul>
             <li><a href="/users/">Users</a></li>
             <li><a href="/logs/">Logs</a></li>
+            <li><a href="/chat/">Chats</a></li>
             <!--            <li><a href="/profile/">Profile</a></li>-->
             <li th:if="!authenticated"><a href="/login">Login</a></li>
             <li th:if="authenticated"><a href="/logout">Logout</a></li>

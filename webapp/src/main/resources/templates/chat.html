@@ -11,29 +11,26 @@
 <footer>
     <nav>
         <ul>
-            <li><a href="/users/">Users</a></li>
-            <li><a href="/logs/">Logs</a></li>
-            <!--            <li><a href="/profile/">Profile</a></li>-->
+            <li><a href="/category/">Category</a></li>
+            <li><a href="/expense/">Expenses</a></li>
+            <li><a href="/chat/">Help Chat</a></li>
+            <li><a href="/profile/">Profile</a></li>
             <li th:if="!authenticated"><a href="/login">Login</a></li>
             <li th:if="authenticated"><a href="/logout">Logout</a></li>
         </ul>
     </nav>
 </footer>
-<h2>All users</h2>
-<div class="layout">
-
-    <div th:each="chat : ${chatList}" class="expense-card">
-        <div class="expense-description">
-            <p th:text="${chat.getUser()}">Value</p>
-            <a th:href="@{/chat/{id}(id=${chat.getId()})}" class="category-description-name" th:text="${chat.getId()}">Value</a>
-            <!--            <p th:text="${users.getCreatedAt()}">Value</p>-->
+<h2>All chats</h2>
+<div id="layout" class="layout">
+    <div class="expense-card" style="width: unset; flex-direction: inherit">
+        <button  class="btn" onclick="openNewChat()" style="width: unset">Open new chat</button>
+        <div id="helpTicket" class="expense-description">
         </div>
+        <input type="hidden" id="username" th:value="${username}"/>
     </div>
 </div>
-
-
-
-
-<script th:src="@{/js/scripts.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script th:src="@{/js/chatPage.js}"></script>
 </body>
 </html>

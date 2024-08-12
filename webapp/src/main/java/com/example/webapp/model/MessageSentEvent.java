@@ -18,6 +18,7 @@ public class MessageSentEvent {
     private String sendFrom;
     private String message;
     private String sendTo;
+    private String ticketId;
 
 
 //    private LocalDateTime timestamp;

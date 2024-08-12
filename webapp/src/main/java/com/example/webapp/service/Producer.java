@@ -5,10 +5,9 @@ package com.example.webapp.service;
 */
 
 import com.example.webapp.model.MessageSentEvent;
-import com.example.webapp.model.RequestMessageList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -16,22 +15,28 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Producer {
 
-    private final KafkaMessagingService kafkaMessagingService;
-    private final ModelMapper modelMapper;
 
+    private static final  String sendTopicMessage = "chat-messages-user";
+    private static final  String sendTopicRequestHelpTicket = "chat-request-help-ticket";
+    private static final  String sendTopicRequestChatList = "chat-request-list";
+    private static final  String sendTopicRequestNewChat = "chat-request-new";
 
-    public MessageSentEvent sendOrderEvent(MessageSentEvent message) {
-        kafkaMessagingService.sendOrder(message);
-        System.out.println("Send message from producer : \n"+ message);
-        return message;
+    private final KafkaTemplate<String , Object> kafkaTemplate;
+
+    public void sendMessage(MessageSentEvent messageSentEvent) {
+        kafkaTemplate.send(sendTopicMessage, messageSentEvent.getSendTo(), messageSentEvent);
     }
 
-//    public RequestMessageList sendListRequest(RequestMessageList message) {
-//        kafkaMessagingService.sendMessageList(message);
-//        System.out.println("Send message to get List : \n"+ message);
-//        return message;
-//    }
+    public void sendRequestForHelpTicketDto(MessageSentEvent req){
+        kafkaTemplate.send(sendTopicRequestHelpTicket, req.getSendTo(), req);
+    }
+
+    public void sendRequestForChatList(MessageSentEvent req){
+        kafkaTemplate.send(sendTopicRequestChatList, req.getSendTo(), req);
+    }
 
 
-
+    public void sendRequestForOpenNewChat(MessageSentEvent req){
+        kafkaTemplate.send(sendTopicRequestNewChat, req.getSendTo(), req);
+    }
 }

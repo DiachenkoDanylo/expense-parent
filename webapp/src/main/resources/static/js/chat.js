@@ -19,26 +19,14 @@ function connect() {
     });
 }
 
-// function requestMessageList() {
-//     const username = document.getElementById('username').value;
-//     const ticketId = document.getElementById('ticketId').value;
-//     stompClient.send("/app/requestMessageList", {}, JSON.stringify({'sendFrom': username, 'ticketId': ticketId}));
-// }
-
-
-
-
-
 function sendMessage() {
     const username = document.getElementById('username').value;
     const message = document.getElementById('messageInput').value;
+    const ticketId = document.getElementById('ticketId').value;
     const messageInput= document.getElementById('messageInput');
-    const sendTo = document.getElementById('sendTo').value;
     messageInput.value='';
-    stompClient.send("/app/sendMessage", {}, JSON.stringify({'sendFrom': username, 'message': message, 'sendTo': sendTo}));
-
+    stompClient.send("/app/sendMessage", {}, JSON.stringify({'sendFrom': username, 'message': message,'ticketId': ticketId, 'sendTo': ''}));
 }
-
 
 function showMessage(message) {
     const messages = document.getElementById('messages');
@@ -53,10 +41,18 @@ function showMessage(message) {
         messageElement.className='chat_bubble_container incoming';
     }
     messageElement.innerHTML = `<div class="chat_bubble">${message.sendFrom}: ${message.message}</div>`;
-    messageDiv.appendChild(messageElement)
+    messageDiv.appendChild(messageElement);
     messages.appendChild(messageDiv);
     const container = document.getElementById('messages');
     container.scrollTop = container.scrollHeight;
 }
 
+function sendReqForChatList() {
+    const username = document.getElementById('username').value;
+    const ticketId = document.getElementById('ticketId').value;
+    stompClient.send("/app/request", {}, JSON.stringify({'sendFrom': username, 'message': 'REQUEST_FOR_CHATLIST', 'sendTo': ticketId}));
+}
+
 connect();
+setTimeout(sendReqForChatList,500);
+
