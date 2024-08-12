@@ -26,6 +26,7 @@ public class ClientUserServiceImpl implements  ClientUserService{
     private final ClientUserRepository clientUserRepository;
     private final ModelMapper modelMapper;
 
+
     public List<UsersDTO> getAllUsers() {
         List<ClientUser> list = clientUserRepository.findAll();
         return list.stream().map(p -> new UsersDTO(p.getId(), p.getUsername(), p.getCreatedAt()))
@@ -93,6 +94,5 @@ public class ClientUserServiceImpl implements  ClientUserService{
 
     public String getUsernameUserById(Integer id){
         return clientUserRepository.findById(id).get().getUsername();
-
     }
 }

@@ -3,7 +3,6 @@ package com.example.managerapp.service.manager;
 import com.example.managerapp.exception.CustomException;
 import com.example.managerapp.model.CategoryDTO;
 import com.example.managerapp.model.ClientUserDTO;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -30,13 +29,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 public class UsersService extends PaginationService<ClientUserDTO>{
 
     private final RestClient restClient;
-    private final ModelMapper modelMapper;
-
     private final OAuth2AuthorizedClientManager authorizedClientManager;
 
-    public UsersService(ModelMapper modelMapper, ClientRegistrationRepository clientRegistrationRepository,
+
+    public UsersService(ClientRegistrationRepository clientRegistrationRepository,
                         OAuth2AuthorizedClientRepository authorizedClientRepository) {
-        this.modelMapper = modelMapper;
         this.authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);
 
@@ -58,6 +55,7 @@ public class UsersService extends PaginationService<ClientUserDTO>{
                 .build();
     }
 
+
     public List<ClientUserDTO> getAllUsers() {
         return restClient.get()
                 .uri("/manager/users")
@@ -72,7 +70,6 @@ public class UsersService extends PaginationService<ClientUserDTO>{
 
     }
 
-
     public ClientUserDTO getUserById(int id) {
         return restClient.get()
                 .uri("/manager/users/{id}",id)
@@ -86,8 +83,6 @@ public class UsersService extends PaginationService<ClientUserDTO>{
                 });
     }
 
-
-
     @Override
     public List<ClientUserDTO> getAllObjectsWithPagination(int page, int clientsPerPage) {
         List<ClientUserDTO> res = getAllUsers();
@@ -98,7 +93,6 @@ public class UsersService extends PaginationService<ClientUserDTO>{
     public List<ClientUserDTO> getAllObjectsWithPagination(List<ClientUserDTO> res, int page, int clientsPerPage) {
         return List.of();
     }
-
 
     public List<CategoryDTO> getUserCategoriesById(Integer id) {
         return restClient.get()

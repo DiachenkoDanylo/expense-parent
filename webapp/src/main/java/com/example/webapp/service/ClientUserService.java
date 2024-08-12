@@ -3,6 +3,7 @@ package com.example.webapp.service;
 import com.example.webapp.model.ClientUserDTO;
 import com.example.webapp.model.ExpenseDTO;
 import com.example.webapp.exception.CustomException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -26,8 +27,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 public class ClientUserService {
 
     private final RestClient restClient;
-
     private final OAuth2AuthorizedClientManager authorizedClientManager;
+
+    @Value("${value.custom.service-port}")
+    public String servicePort;
 
     public ClientUserService(ClientRegistrationRepository clientRegistrationRepository,
                              OAuth2AuthorizedClientRepository authorizedClientRepository) {
@@ -35,8 +38,7 @@ public class ClientUserService {
                 clientRegistrationRepository, authorizedClientRepository);
 
         this.restClient = RestClient.builder()
-                .baseUrl("http://localhost:6062")
-//                .baseUrl("http://172.17.0.1:6062")
+                .baseUrl(servicePort)
             .requestInterceptor((request, body, execution) -> {
                 if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                     var token = this.authorizedClientManager.authorize(

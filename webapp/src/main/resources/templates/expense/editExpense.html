@@ -12,6 +12,7 @@
             <li><a href="/category/">Category</a></li>
             <li><a href="/expense/">Expenses</a></li>
             <li><a href="/profile/">Profile</a></li>
+            <li><a href="/chat/">Help Chat</a></li>
             <li th:if="!authenticated"><a href="/login">Login</a></li>
             <li th:if="authenticated"><a href="/logout">Logout</a></li>
         </ul>
@@ -40,7 +41,7 @@
             <option th:each="cat : ${categories}" th:value="${cat.getId()}" th:text="${cat.getName()}"></option>
         </select>
 
-        <button type="submit">Save Changes</button>
+        <button class="simple_button"  type="submit">Save Changes</button>
     </form>
 </div>
 <!--<div class="container">-->

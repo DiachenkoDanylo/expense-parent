@@ -12,6 +12,7 @@
         <ul>
             <li><a href="/users/">Users</a></li>
             <li><a href="/logs/">Logs</a></li>
+            <li><a href="/chat/">Chats</a></li>
 <!--            <li><a href="/profile/">Profile</a></li>-->
             <li th:if="!authenticated"><a href="/login">Login</a></li>
             <li th:if="authenticated"><a href="/logout">Logout</a></li>
@@ -22,7 +23,7 @@
 <div class="layout">
 
     <div th:each="log : ${logsList}" >
-        <div th:if="${log.toString().contains('SAVE')}">
+        <div th:if="${log.toString().contains('SAVE')||log.toString().contains('INSERT')}">
             <p th:text="${log.toString()}" style="color: green">Value</p>
         </div>
         <div th:if="${log.toString().contains('DELETE')}">

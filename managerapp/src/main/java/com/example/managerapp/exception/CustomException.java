@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+@Setter
 @Getter
 public class CustomException extends RuntimeException {
 
@@ -29,18 +30,6 @@ public class CustomException extends RuntimeException {
         this.message = e.getMessage();
         this.status =e.getStatus();
         this.time = e.getTime();
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
     @Override

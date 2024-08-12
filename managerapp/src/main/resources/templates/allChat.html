@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/styles/css/style.css">
+    <title>All chats</title>
+</head>
+<body>
+
+<footer>
+    <nav>
+        <ul>
+            <li><a href="/users/">Users</a></li>
+            <li><a href="/logs/">Logs</a></li>
+            <li><a href="/chat/">Chats</a></li>
+            <!--            <li><a href="/profile/">Profile</a></li>-->
+            <li th:if="!authenticated"><a href="/login">Login</a></li>
+            <li th:if="authenticated"><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</footer>
+<h2>All users</h2>
+<div class="layout">
+
+    <div th:each="chat : ${chatList}" class="expense-card">
+        <div class="expense-description">
+            <p th:text="${chat.getUser()}">Value</p>
+            <a th:href="@{/chat/{id}(id=${chat.getId()})}" class="category-description-name" th:text="${chat.getId()}">Value</a>
+<!--            <p th:text="${users.getCreatedAt()}">Value</p>-->
+        </div>
+    </div>
+</div>
+
+
+
+
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

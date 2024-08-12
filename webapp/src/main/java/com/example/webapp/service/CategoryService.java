@@ -6,6 +6,7 @@ package com.example.webapp.service;
 
 import com.example.webapp.model.CategoryDTO;
 import com.example.webapp.exception.CustomException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -29,6 +30,8 @@ public class CategoryService {
 
     private final OAuth2AuthorizedClientManager authorizedClientManager;
 
+    @Value("${value.custom.service-port}")
+    public String servicePort;
 
     public CategoryService(ClientRegistrationRepository clientRegistrationRepository,
                              OAuth2AuthorizedClientRepository authorizedClientRepository) {
@@ -36,8 +39,7 @@ public class CategoryService {
                 clientRegistrationRepository, authorizedClientRepository);
 
         this.restClient = RestClient.builder()
-//                .baseUrl("http://172.17.0.1:6062")
-                .baseUrl("http://localhost:6062")
+                .baseUrl(servicePort)
                 .requestInterceptor((request, body, execution) -> {
                     if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                         var token = this.authorizedClientManager.authorize(

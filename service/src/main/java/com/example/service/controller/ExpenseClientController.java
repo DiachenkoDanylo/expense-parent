@@ -24,9 +24,8 @@ import java.util.List;
 @Slf4j
 public class ExpenseClientController {
 
-    private final ClientUserServiceImpl clientUserService;
     private final ExpenseService expenseService;
-    private final WebApplicationContext webApplicationContext;
+
 
     @GetMapping("")
     public Expense getExpenseById(@RequestParam ("id") int expId) {
@@ -72,7 +71,6 @@ public class ExpenseClientController {
     public ResponseEntity<String> deleteExpense(@RequestParam ("id") int expId,
                                                     @PathVariable ("username") String username) {
         expenseService.deleteExpenseByUsernameAndId(username,expId);
-        System.out.println("\n \n"+username+"\n \n"+expId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

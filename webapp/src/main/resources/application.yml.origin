@@ -1,21 +1,40 @@
-server:
-  port:
-    8080
-
 spring:
+  kafka:
+    bootstrap-servers: *KAFKA_PORT localhost:8082* -- example
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: 1
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+
   security:
     oauth2:
       client:
         provider:
           keycloak:
-#            issuer-uri: http://172.17.0.1:8083/realms/expenseRealm
-            issuer-uri: http://localhost:8083/realms/expenseRealm
-            user-name-attribute: preferred_username
+            issuer-uri: http://*YOUR_URL_TO_KEYCLOAK*
         registration:
           expense-app-client-credentials:
             provider: keycloak
             client-id: expense-app
-            client-secret: zSkzsi0EUIPoYqRQE5SytO2uBDo0wnLA
+            client-secret: *YOUR_CLIENT_SECRET*
             scope:
               - openid
               - microprofile-jwt
+value:
+  custom:
+    service-port : "http://*YOUR_URL_TO_SERVICE*"
+

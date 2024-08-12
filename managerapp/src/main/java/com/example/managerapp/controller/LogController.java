@@ -18,6 +18,7 @@ import java.util.List;
     28.07.2024
     @author DiachenkoDanylo
 */
+
 @RequestMapping("/logs")
 @Controller
 public class LogController {

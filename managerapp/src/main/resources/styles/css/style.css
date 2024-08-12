@@ -16,7 +16,7 @@ body {
 body h2 {
     width: 90%;
     align-self: center;
-    padding-top: 20px;
+    margin-top: 20px;
 }
 
 footer {
@@ -290,4 +290,102 @@ main {
 .fab-options a:hover {
     background-color: #c59458;
     /*background-color: #0056b3;*/
+}
+
+.userHeader{
+    display: flex;
+    justify-content: space-around;
+}
+
+.chat{
+    background: linear-gradient(to right, #f0f0f0, #ceccde);
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    max-height: 600px;
+    justify-content: flex-end;
+    margin: 0 20px 10px 20px;
+}
+
+.messages {
+    padding: 10px;
+    overflow-y: auto;
+    height: 600px;
+}
+
+.chat_bubble_container{
+    display:flex;
+    /*width: 400px;*/
+}
+
+.chat_bubble_container.incoming{
+    justify-content: flex-start;
+}
+
+.chat_bubble_container.outgoing{
+    justify-content: flex-end;
+}
+
+.chat_bubble_container .chat_bubble{
+    max-width: 95%;
+    display:flex;
+    padding: 4px;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.chat_bubble_container.incoming .chat_bubble{
+    background: #d1d1d1;
+}
+
+.chat_bubble_container.outgoing .chat_bubble{
+    max-width: 95%;
+    background: #429bd7;
+    color: white;
+}
+
+.input_container {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    background: #fff; /* Background color, adjust as needed */
+    padding: 10px;
+    border-top: 1px solid #ccc; /* Optional border for separation */
+}
+
+.text_input {
+    /*height: 40px;*/
+    /*width: 80%;*/
+    /*padding: 5px;*/
+    /*line-height: 30px;*/
+    /*font-size: 15px;*/
+    /*margin: 3px 3px 3px 6px;*/
+    /*border: none;*/
+    /*border-radius: 10px;*/
+    flex: 1; /* Take up available space */
+    padding: 10px;
+    margin-right: 10px; /* Space between input and button */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+}
+
+.text_input:focus {
+    outline: none;
+}
+
+.btn {
+    border: none;
+    padding: 5px;
+    margin: 3px 3px 3px 6px;
+    line-height: 30px;
+    background: orange;
+    color: white;
+    border-radius: 10px;
+    width: 15%;
+    font-weight: bold;
+}
+
+.btn:hover {
+    color: black;
+    cursor: pointer;
 }

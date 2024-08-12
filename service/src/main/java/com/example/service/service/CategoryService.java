@@ -1,15 +1,11 @@
 package com.example.service.service;
 
 import com.example.service.dto.CategoryPayload;
-import com.example.service.dto.ExpenseDTO;
-import com.example.service.dto.ExpensePayloadCategory;
 import com.example.service.entity.Category;
 import com.example.service.entity.ClientUser;
-import com.example.service.entity.Expense;
 import com.example.service.exception.NotAllowedActionException;
 import com.example.service.exception.NotFoundException;
 import com.example.service.repository.CategoryRepository;
-import com.example.service.repository.ExpenseRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -27,6 +23,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     private final ClientUserServiceImpl clientUserService;
+
 
     public List<Category>  getAllCategories() {
         return categoryRepository.findAll();
@@ -51,8 +48,6 @@ public class CategoryService {
             category.setClientUser(clientUser);
             System.out.println(category.toString());
             categoryRepository.save(category);
-//            categoryRepository.saveCategoryByClient(clientUserService.getUserByUsername(username).getId(),expense.getDescription(),expense.getCategory().getId(),expense.getAmount());
-//            return convertToExpenseDTO(convertToExpenseWithCategory(expenseDTO));
             return category;
         } catch (NotFoundException e) {
             throw new NotFoundException("User with username '" + username + "' are not exists in our service");
@@ -79,15 +74,12 @@ public class CategoryService {
         return this.modelMapper.map(categoryPayload, Category.class);
     }
 
-//
+
     public void deleteCategoryByUsernameAndId(String username, int catId, boolean include) {
         if(this.getCategoryById(catId).getClientUser().getUsername().equals(username)){
              categoryRepository.deleteById(catId);
              System.out.println("not INCLUDE AT DELETING");
             }
     }
-//
-//    public void deleteCategoryByUsernameAndIdWithoutExpenses(String username, int catId){
-//
-//    }
+
 }

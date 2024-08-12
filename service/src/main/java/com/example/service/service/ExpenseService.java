@@ -29,8 +29,6 @@ public class ExpenseService {
     private final CategoryService categoryService;
 
 
-
-
     public List<ExpenseDTO> getAllExpensesDTOByClient(String username){
         List<ExpenseDTO> expenseDTOS = new ArrayList<>();
         try {
@@ -84,37 +82,11 @@ public class ExpenseService {
         }
     }
 
-
-//    public ExpenseDTO saveNewExpenseByClient(String username, ExpenseDTO expenseDTO) {
-//        if(expenseDTO.getCategory()==null) {
-//            try {
-//                ClientUser clientUser = clientUserService.getUserByUsername(username);
-//                Expense expense = convertToExpense(expenseDTO);
-//                expense.setClientUser(clientUser);
-//                return convertToExpenseDTO(expenseRepository.save(expense));
-//            } catch (NotFoundException e) {
-//                throw new NotFoundException("User with username '" + username + "' are not exists in our service");
-//            }
-//        }else {
-//            try {
-//                ClientUser clientUser = clientUserService.getUserByUsername(username);
-//                Expense expense = convertToExpenseWithCategory(expenseDTO);
-//                expense.setClientUser(clientUser);
-//                return convertToExpenseDTO(expenseRepository.saveExpenseByCategory(expense));
-//            } catch (NotFoundException e) {
-//                throw new NotFoundException("User with username '" + username + "' are not exists in our service");
-//            }
-//
-//        }
-//    }
-
     public ExpenseDTO update(int expId, ExpenseDTO expenseDTO,String username) {
         Expense exp = getExpenseByUsernameAndId(expId,username);
-//        exp.setExpenseDate(expenseDTO.getExpenseDate());
         exp.setAmount(expenseDTO.getAmount());
         exp.setDescription(expenseDTO.getDescription());
         exp.setCategory(expenseDTO.getCategory());
-//        exp.setExpenseDate(LocalDateTime.now());
         return convertToExpenseDTO(expenseRepository.save(exp));
 
     }
@@ -147,7 +119,6 @@ public class ExpenseService {
         return this.modelMapper.map(expense, ExpenseDTO.class);
     }
 
-
     public ExpenseDTO saveNewExpenseByClientCategory(String username, ExpensePayloadCategory expenseDTO) {
         try {
             ClientUser clientUser = clientUserService.getUserByUsername(username);
@@ -164,7 +135,6 @@ public class ExpenseService {
         ClientUser userId = clientUserService.getUserByUsername(username);
         if(userId.getUsername().equals(username)) {
             expenseRepository.delete(getExpenseById(expId));
-//            expenseRepository.deleteExpenseByIdAndClientUser_Id(expId,userId.getId());
         } else {
             throw new NotAllowedActionException("User with username "+username+" not allowed to do that");
         }
