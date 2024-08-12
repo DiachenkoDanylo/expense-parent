@@ -14,18 +14,16 @@ import java.time.LocalDateTime;
 public class ExpenseDTO {
 
     private int id;
-
     private Category category;
-
     private BigDecimal amount;
-
     private String description;
-
     private LocalDateTime expenseDate;
+
 
     public ExpenseDTO() {
         super();
     }
+
 
     public ExpenseDTO(int id, BigDecimal amount, String description, Category categoryById) {
         this.id=id;

@@ -12,10 +12,9 @@ import lombok.NoArgsConstructor;
 public class CategoryPayload {
 
     private int id;
-
     private String name;
-
     private String description;
+
 
     public CategoryPayload(int id, String name, String description){
         this.id=id;

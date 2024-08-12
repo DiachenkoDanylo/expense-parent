@@ -11,6 +11,7 @@ public class ClientUserDTO {
 
     private String username;
 
+
     public ClientUserDTO() {
         super();
     }

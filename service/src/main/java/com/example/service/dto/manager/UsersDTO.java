@@ -12,9 +12,7 @@ import java.time.LocalDateTime;
 public class UsersDTO {
 
     private Integer id;
-
     private String username;
-
     private LocalDateTime createdAt;
 
 

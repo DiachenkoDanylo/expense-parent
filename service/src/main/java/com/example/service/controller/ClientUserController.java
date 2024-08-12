@@ -2,12 +2,8 @@ package com.example.service.controller;
 
 import com.example.service.dto.ClientUserDTO;
 import com.example.service.entity.ClientUser;
-import com.example.service.exception.DuplicateException;
-import com.example.service.exception.NotFoundException;
 import com.example.service.service.ClientUserServiceImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +18,7 @@ import java.util.List;
 public class ClientUserController {
 
     private final ClientUserServiceImpl clientUserService;
+
 
     @GetMapping("")
     public List<ClientUserDTO> getClients(){

@@ -14,6 +14,7 @@
             <li><a href="/category/">Category</a></li>
             <li><a href="/expense/">Expenses</a></li>
             <li><a href="/profile/">Profile</a></li>
+            <li><a href="/chat/">Help Chat</a></li>
             <li th:if="!authenticated"><a href="/logout">Login</a></li>
             <li th:if="authenticated"><a href="/logout">Logout</a></li>
         </ul>
@@ -22,7 +23,14 @@
 
 <h2>Categories</h2>
     <div class="layout">
+        <div class="expense-card" style="width: unset" >
+            <form th:action="@{/category/new}" method="get" style="display: flex">
+                <button  class="btn" type="submit" style="width: unset">
+                    New Category
+                </button>
+            </form>
 
+        </div>
         <div th:each="category : ${categoryList}" class="expense-card">
             <div class="expense-card-layout">
                 <form th:action="@{/category/edit}" method="get">

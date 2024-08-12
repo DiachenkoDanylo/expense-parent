@@ -12,6 +12,7 @@
             <li><a href="/category/">Category</a></li>
             <li><a href="/category/">Expenses</a></li>
             <li><a href="/profile/">Profile</a></li>
+            <li><a href="/chat/">Help Chat</a></li>
             <li th:if="!authenticated"><a href="/login">Login</a></li>
             <li th:if="authenticated"><a href="/logout">Logout</a></li>
         </ul>
@@ -34,37 +35,15 @@
     <form th:method="DELETE" th:action="@{/category/delete}">
         <input type="hidden" name="id" th:value="${category.getId()}">
         <input type="hidden" name="cascade" th:value="true">
-<!--        @RequestParam(value = "cascade", required = false) Boolean cascade,-->
-<!--        @RequestParam("id") Integer id)-->
-        <button type="submit">Delete with expenses </button>
+        <button  class="simple_button" type="submit">Delete with expenses </button>
     </form>
     <form th:method="DELETE" th:action="@{/category/delete}">
         <input type="hidden" name="id" th:value="${category.getId()}">
         <input type="hidden" name="cascade" th:value="false">
-<!--        @RequestParam(value = "cascade", required = false) Boolean cascade,-->
-<!--        @RequestParam("id") Integer id)-->
-        <button type="submit">Delete without expenses </button>
+        <button class="simple_button" type="submit">Delete without expenses </button>
     </form>
 
 </div>
-<!--<div class="container">-->
-<!--    <h1>Edit Expense</h1>-->
-<!--    <form th:action="@{/editExpense}" method="post">-->
-<!--        <input type="hidden" name="id" th:value="${category.id}"/>-->
 
-<!--        &lt;!&ndash; Description Field &ndash;&gt;-->
-<!--        <label for="description">Description:</label>-->
-<!--        <input type="text" id="description" name="description" th:value="${category.description}" required/>-->
-
-<!--        &lt;!&ndash; Category Dropdown &ndash;&gt;-->
-<!--        <label for="dropDownList">Category:</label>-->
-<!--        <select class="form-control" id="dropDownList2" name="categoryId">-->
-<!--            <option value="0">Select Category</option>-->
-<!--            <option th:each="cat : ${categories}" th:value="${cat.getId()}" th:text="${cat.getName()}" th:selected="${cat.getId() == category.getCategory().getId()}"></option>-->
-<!--        </select>-->
-
-<!--        <button type="submit">Save Changes</button>-->
-<!--    </form>-->
-<!--</div>-->
 </body>
 </html>

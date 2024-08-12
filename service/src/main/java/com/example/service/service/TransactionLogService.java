@@ -16,16 +16,19 @@ public class TransactionLogService {
 
     private final TransactionLogRepository repository;
 
+
     @Autowired
     public TransactionLogService(TransactionLogRepository repository) {
         this.repository = repository;
     }
+
 
     public void saveLog(TransactionLog log) {
         repository.save(log);
     }
 
     public List<String> getAllLogs() {
+        repository.findAll().forEach(System.out::println);
         return repository.findAll().stream().map(TransactionLog::toString).toList();
     }
 

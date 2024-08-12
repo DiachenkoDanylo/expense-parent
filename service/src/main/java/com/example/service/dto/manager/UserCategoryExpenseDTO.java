@@ -6,8 +6,6 @@ package com.example.service.dto.manager;
 
 import com.example.service.dto.CategoryPayload;
 import com.example.service.dto.ExpenseDTO;
-import com.example.service.entity.Category;
-import com.example.service.entity.Expense;
 import lombok.Data;
 
 import java.time.LocalDateTime;

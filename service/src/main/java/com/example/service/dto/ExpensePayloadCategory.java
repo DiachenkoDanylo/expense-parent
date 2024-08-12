@@ -16,15 +16,10 @@ import java.time.LocalDateTime;
 public class ExpensePayloadCategory {
 
     private int id;
-
     private Category category;
-
     private BigDecimal amount;
-
     private String description;
-
     private LocalDateTime expenseDate;
-
 
     public ExpensePayloadCategory(LocalDateTime expenseDate,int id,Category category, BigDecimal amount, String description){
         this.id=id;

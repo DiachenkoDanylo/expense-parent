@@ -6,6 +6,7 @@ package com.example.managerapp.service.manager;
 
 import com.example.managerapp.exception.CustomException;
 import com.example.managerapp.model.ExpenseDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -25,18 +26,17 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 public class ExpenseService {
 
     private final RestClient restClient;
-
     private final OAuth2AuthorizedClientManager authorizedClientManager;
+
+    @Value("${value.custom.service-port}")
+    private String servicePort;
 
     public ExpenseService(ClientRegistrationRepository clientRegistrationRepository,
                           OAuth2AuthorizedClientRepository authorizedClientRepository) {
         this.authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);
-
         this.restClient = RestClient.builder()
-
-                .baseUrl("http://localhost:6062")
-//                .baseUrl("http://172.17.0.1:6062")
+                .baseUrl(servicePort)
                 .requestInterceptor((request, body, execution) -> {
                     if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                         var token = this.authorizedClientManager.authorize(

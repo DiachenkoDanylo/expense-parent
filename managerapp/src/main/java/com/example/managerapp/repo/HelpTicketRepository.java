@@ -7,10 +7,12 @@ package com.example.managerapp.repo;
 import com.example.managerapp.model.HelpTicket;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface HelpTicketRepository extends MongoRepository<HelpTicket, String> {
     Optional<HelpTicket> findHelpTicketById(String id);
-    public Optional<HelpTicket> findHelpTicketByUser(String username);
+    Optional<HelpTicket> findHelpTicketByUser(String username);
+    List<HelpTicket> findAllHelpTicketByUser(String username);
     // Custom query methods if needed
 }

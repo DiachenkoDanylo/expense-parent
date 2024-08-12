@@ -8,6 +8,7 @@ import com.example.webapp.exception.CustomException;
 import com.example.webapp.model.ClientUserDTO;
 import com.example.webapp.model.ExpenseDTO;
 import com.example.webapp.model.ExpensePayload;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -32,15 +33,16 @@ public class ExpenseService {
     private final OAuth2AuthorizedClientManager authorizedClientManager;
     private final CategoryService categoryService;
 
+    @Value("${value.custom.service-port}")
+    public String servicePort;
+
     public ExpenseService(ClientRegistrationRepository clientRegistrationRepository,
                           OAuth2AuthorizedClientRepository authorizedClientRepository, CategoryService categoryService) {
         this.authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);
 
         this.restClient = RestClient.builder()
-
-                .baseUrl("http://localhost:6062")
-//                .baseUrl("http://172.17.0.1:6062")
+                .baseUrl(servicePort)
                 .requestInterceptor((request, body, execution) -> {
                     if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                         var token = this.authorizedClientManager.authorize(
@@ -175,11 +177,6 @@ public class ExpenseService {
                     categoryService.getCategoryById(oAuth2User,expensePayload.getCategory()));
         }
         System.out.println("inside updateExpense \n \n \n "+expenseDTO.toString()+ "\n \n \n ");
-//        restClient.patch().uri(
-//                        "/expense/{username}",
-//                        oAuth2User.getAttributes().get("email").toString())
-//                .body(expenseDTO).retrieve();
-
         String uri = String.format("/expense/%s?id=%d",
                 oAuth2User.getAttributes().get("email").toString(), id);
 

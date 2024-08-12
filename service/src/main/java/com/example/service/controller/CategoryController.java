@@ -1,23 +1,15 @@
 package com.example.service.controller;
 
 import com.example.service.dto.CategoryPayload;
-import com.example.service.dto.ExpenseDTO;
-import com.example.service.dto.ExpensePayloadCategory;
 import com.example.service.entity.Category;
 import com.example.service.exception.NotAllowedActionException;
-import com.example.service.exception.NotFoundException;
 import com.example.service.service.CategoryService;
 import com.example.service.service.ExpenseService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticatedPrincipal;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 /*  expense-parent
@@ -31,6 +23,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
     private final ExpenseService expenseService;
+
 
     @GetMapping("")
     public List<Category> getAll() {
@@ -73,7 +66,6 @@ public class CategoryController {
                                                  @RequestParam (value = "with", required = false) boolean with) {
         categoryService.deleteCategoryByUsernameAndId(username,catId,with);
         expenseService.updateAfterDeletingCategory(username,catId,with);
-        System.out.println("\n \n"+username+"\n \n"+catId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

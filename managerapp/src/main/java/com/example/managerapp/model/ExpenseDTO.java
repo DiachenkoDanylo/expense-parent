@@ -17,13 +17,9 @@ import java.time.LocalDateTime;
 public class ExpenseDTO {
 
     private int id;
-
     private BigDecimal amount;
-
     private String description;
-
     private LocalDateTime expenseDate;
-
     private CategoryDTO category;
 
     public ExpenseDTO(BigDecimal amount, String description,CategoryDTO category) {
@@ -31,6 +27,8 @@ public class ExpenseDTO {
         this.description=description;
         this.category =category;
     }
+
+
     public ExpenseDTO(int id, BigDecimal amount, String description,CategoryDTO category) {
         this.id=id;
         this.amount= amount;
