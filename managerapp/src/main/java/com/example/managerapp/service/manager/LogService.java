@@ -27,11 +27,9 @@ public class LogService extends PaginationService<String>{
     private final RestClient restClient;
     private final OAuth2AuthorizedClientManager authorizedClientManager;
 
-    @Value("${value.custom.service-port}")
-    private String servicePort;
 
 
-    public LogService(ClientRegistrationRepository clientRegistrationRepository,
+    public LogService(String servicePort,ClientRegistrationRepository clientRegistrationRepository,
                           OAuth2AuthorizedClientRepository authorizedClientRepository) {
         this.authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);

@@ -33,14 +33,11 @@ public class ExpenseService {
     private final OAuth2AuthorizedClientManager authorizedClientManager;
     private final CategoryService categoryService;
 
-    @Value("${value.custom.service-port}")
-    public String servicePort;
 
-    public ExpenseService(ClientRegistrationRepository clientRegistrationRepository,
+    public ExpenseService(String servicePort, ClientRegistrationRepository clientRegistrationRepository,
                           OAuth2AuthorizedClientRepository authorizedClientRepository, CategoryService categoryService) {
         this.authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);
-
         this.restClient = RestClient.builder()
                 .baseUrl(servicePort)
                 .requestInterceptor((request, body, execution) -> {
