@@ -29,10 +29,8 @@ public class ClientUserService {
     private final RestClient restClient;
     private final OAuth2AuthorizedClientManager authorizedClientManager;
 
-    @Value("${value.custom.service-port}")
-    public String servicePort;
 
-    public ClientUserService(ClientRegistrationRepository clientRegistrationRepository,
+    public ClientUserService(String servicePort,ClientRegistrationRepository clientRegistrationRepository,
                              OAuth2AuthorizedClientRepository authorizedClientRepository) {
         this.authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);

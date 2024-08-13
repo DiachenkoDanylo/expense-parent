@@ -32,15 +32,13 @@ public class UsersService extends PaginationService<ClientUserDTO>{
     private final OAuth2AuthorizedClientManager authorizedClientManager;
 
 
-    public UsersService(ClientRegistrationRepository clientRegistrationRepository,
+    public UsersService(String servicePort,ClientRegistrationRepository clientRegistrationRepository,
                         OAuth2AuthorizedClientRepository authorizedClientRepository) {
         this.authorizedClientManager = new DefaultOAuth2AuthorizedClientManager(
                 clientRegistrationRepository, authorizedClientRepository);
 
         this.restClient = RestClient.builder()
-
-                .baseUrl("http://localhost:6062")
-//                .baseUrl("http://172.17.0.1:6062")
+                .baseUrl(servicePort)
                 .requestInterceptor((request, body, execution) -> {
                     if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                         var token = this.authorizedClientManager.authorize(
