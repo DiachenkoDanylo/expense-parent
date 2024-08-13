@@ -5,9 +5,14 @@
     <title>Profile</title>
 </head>
 <body>
-<div>
-
-</div>
+<div id="footer-container"></div>
+<script>
+    fetch('/js/manager-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-container').innerHTML = data;
+        });
+</script>
 <div class="fab-container">
     <div class="fab-button" id="fabButton">
         +

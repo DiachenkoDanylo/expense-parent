@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
+    <title>Expense Tracker Manager</title>
     <link rel="stylesheet" href="/styles/css/style.css">
 </head>
 <body>
-<footer>
-    <nav>
-        <ul>
-            <li><a href="/users/">Users</a></li>
-            <li><a href="/logs/">Logs</a></li>
-            <li><a href="/chat/">Chats</a></li>
-            <!--            <li><a href="/profile/">Profile</a></li>-->
-            <li th:if="!authenticated"><a href="/login">Login</a></li>
-            <li th:if="authenticated"><a href="/logout">Logout</a></li>
-        </ul>
-    </nav>
-</footer>
+<div id="footer-container"></div>
+<script>
+    fetch('/js/manager-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-container').innerHTML = data;
+        });
+</script>
 <main>
     <section class="intro">
         <h1>Welcome  to Expense Tracker Manager Panel</h1>
-        <h2 th:text="${user.toString()}">value</h2>
-        <h3>Track Your Expenses Easily</h3>
     </section>
 </main>
 </body>

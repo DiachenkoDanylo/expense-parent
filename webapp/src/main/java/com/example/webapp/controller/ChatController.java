@@ -17,14 +17,14 @@ public class ChatController {
     @GetMapping("")
     public String indexPage(Model model, @AuthenticationPrincipal OAuth2User oAuth2User){
         model.addAttribute("username", oAuth2User.getAttributes().get("email"));
-        return "chat";
+        return "allChats";
     }
 
     @GetMapping("{id}")
     public String showChat(@PathVariable("id") String id, Model model, @AuthenticationPrincipal OAuth2User oAuth2User){
         model.addAttribute("ticketId",id);
         model.addAttribute("username", oAuth2User.getAttributes().get("email").toString());
-        return "chatTest";
+        return "chatMain";
     }
 
 }
