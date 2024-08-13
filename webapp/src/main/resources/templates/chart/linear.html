@@ -35,18 +35,14 @@
     </script>
 </head>
 <body>
-<footer>
-    <nav>
-        <ul>
-            <li><a href="/category/">Category</a></li>
-            <li><a href="/category/">Expenses</a></li>
-            <li><a href="/profile/">Profile</a></li>
-            <li><a href="/chat/">Help Chat</a></li>
-            <li th:if="!authenticated"><a href="/login">Login</a></li>
-            <li th:if="authenticated"><a href="/logout">Logout</a></li>
-        </ul>
-    </nav>
-</footer>
+<div id="footer-container"></div>
+<script>
+    fetch('/js/footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-container').innerHTML = data;
+        });
+</script>
 <div id="curve_chart" style="width: 900px; height: 500px; align-self: center; padding-top: 10px"></div>
 <div class="fab-container">
     <div class="fab-button" id="fabButton">

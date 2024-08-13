@@ -7,18 +7,14 @@
     <title>User Logs</title>
 </head>
 <body style="background: #e5e7eb">
-<footer>
-    <nav>
-        <ul>
-            <li><a href="/users/">Users</a></li>
-            <li><a href="/logs/">Logs</a></li>
-            <li><a href="/chat/">Chats</a></li>
-<!--            <li><a href="/profile/">Profile</a></li>-->
-            <li th:if="!authenticated"><a href="/login">Login</a></li>
-            <li th:if="authenticated"><a href="/logout">Logout</a></li>
-        </ul>
-    </nav>
-</footer>
+<div id="footer-container"></div>
+<script>
+    fetch('/js/manager-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-container').innerHTML = data;
+        });
+</script>
 <div class="layout">
 
     <div th:each="log : ${logsList}" >

@@ -26,7 +26,6 @@ public class ChatController {
 
     @GetMapping("")
     public String index(Model model, @AuthenticationPrincipal OAuth2User oAuth2User){
-        model.addAttribute("user",oAuth2User.getAttributes().get("email").toString());
         return "index";
     }
 

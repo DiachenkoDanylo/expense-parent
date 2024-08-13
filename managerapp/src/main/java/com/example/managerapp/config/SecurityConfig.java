@@ -24,7 +24,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(customizer -> customizer
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/styles/css/**").permitAll()
+                        .requestMatchers("/styles/css/**","/js/**").permitAll()
                         .requestMatchers("/user**","/logs**").hasAnyRole("MANAGER","ADMIN")
                         .anyRequest().authenticated())
                 .oauth2Client(Customizer.withDefaults())

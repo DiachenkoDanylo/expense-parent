@@ -7,19 +7,14 @@
     <title>Charts</title>
 </head>
 <body>
-
-<footer>
-    <nav>
-        <ul>
-            <li><a href="/category/">Category</a></li>
-            <li><a href="/expense/">Expenses</a></li>
-            <li><a href="/profile/">Profile</a></li>
-            <li><a href="/chat/">Help Chat</a></li>
-            <li th:if="!authenticated"><a href="/login">Login</a></li>
-            <li th:if="authenticated"><a href="/logout">Logout</a></li>
-        </ul>
-    </nav>
-</footer>
+<div id="footer-container"></div>
+<script>
+    fetch('/js/footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-container').innerHTML = data;
+        });
+</script>
 <h2>Available Chart</h2>
 <div class="layout">
 
