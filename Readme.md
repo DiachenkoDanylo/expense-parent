@@ -45,4 +45,6 @@ This project was created to implement an application for tracking and analyzing 
 * AOP 
 * Logback
 
+<img src="forReadme/expense-parent-diagram.png">
+
 #### Project is still under development
